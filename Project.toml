@@ -1,0 +1,4 @@
+name = "JuliaTutorial"
+uuid = "42f0f0c0-c90a-47e4-81be-5783cf3e91d9"
+authors = ["kathesch <katherinegruenewald@gmail.com>"]
+version = "0.1.0"
