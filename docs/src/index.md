@@ -24,15 +24,13 @@ I think Julia is perhaps the most productive gateway to the world of numerical m
 
 Julia can be installed from its [official download page](https://julialang.org/downloads/).
 
-It can also be installed via homebrew (on macs). This command will install the current stable release (currently 1.8.1).
+It can also be installed via homebrew (on macs) by pasting the following command into a terminal. This command will install the current stable release (currently 1.8.1).
 
 ```
 brew install --cask julia
 ```
 
-You can run a Julia file in you active directory by typing `julia my_julia_program.jl`
-
-Simply typing `julia` in a terminal to open a Julia REPL (read-evaluate-print-loop) session. You can use the REPL to evaluate simple julia expression, manage julia packages, run shell commands, and access documentation. Additionally, you can run a Julia file in you active directory by typing `julia my_julia_program.jl`. 
+Simply typing `julia` in a terminal to open a Julia REPL (read-evaluate-print-loop) session. You can use the REPL to evaluate simple Julia expression, manage Julia packages, run shell commands, and access documentation. Additionally, you can run a Julia file in you active directory by typing `julia my_julia_program.jl`. 
 
 Let's open a julia REPL and type `print("hello world")`.
 ```
@@ -50,7 +48,7 @@ julia> print("hello world")
 hello world
 ```
 
-The REPL is a great interface for using Julia quickly (to make a quick plot, overview your packages, or do a quick calculation), but we will need a robust IDE (Integrated Development Environment) to write more complex code. There are many IDE's for various programming languages including Julia, but the easiest and most fully featured one for Julia is VS Code which we will install in the next section. 
+The REPL is a great interface for using Julia quickly (to make a fast plot, overview your packages, or do a small calculation), but we will need a robust IDE (Integrated Development Environment) to write more complex code. There are many IDE's for various programming languages including Julia, but the easiest and most fully featured one for Julia is VS Code which we will install in the next section. 
 
 !!! note "On Julia versions"
 
@@ -62,20 +60,20 @@ The REPL is a great interface for using Julia quickly (to make a quick plot, ove
 
     Typically, Julia code written for 1.0.0 will work if run by later versions of Julia (this is known as backwards compatability). However code written for a newer Julia version cannot be assumed to run on an earlier Julia version i.e. it is not forward compatible. This is usually because it incorporates language features which are not parseable by earlier Julia versions.
 
-    Practically speaking, if you keep Julia updated to the current stable release, you won't run into version issues, but if you find yourself needing to use many different versions of Julia, for instance, if you want to test the latest releases or want to use a very old package, you can use the [juliaup](https://github.com/JuliaLang/juliaup) tool to quickly and conveniently manage many different Julia versions. 
+    Practically speaking, if you keep Julia updated to the current stable release, you won't run into version issues, but if you find yourself needing to use many different versions of Julia, for instance, if you want to test the latest releases or want to use a very old package, you can use the [juliaup](https://github.com/JuliaLang/juliaup) tool to conveniently manage many different Julia versions. 
 
 
 # Using Julia in VS Code
 
 VS Code can be installed from its [official download page](https://code.visualstudio.com/download).
 
-It can also be installed via homebrew (on macs) by pasting the following command into a terminal.
+It can also be installed via homebrew (on macs).
 
 `brew install --cask visual-studio-code`
 
 You can then open VS Code by typing `code` into a terminal. 
 
-The julia extension can be install by clicking the following extension button in the upper left of VS Code.
+The Julia extension can be install by clicking the following extension button in the upper left of VS Code.
 
 ![](2022-09-26-14-51-45.png)
 
@@ -110,20 +108,80 @@ Congratulations! We are now set-up for working with Julia.
 
 # Writing simple Julia programs
 
-Out-of-the-box, we can already do quite a lot with Julia. 
+Type `1+1` into the editor window in VS Code and press `shift + enter` to execute the line your cursor is on (or execute multiple lines if you have them highlighted). By default, it will print an "inline result" next to the code as well as in the REPL session below your editor. 
 
-Let's write a simple program. Just type `1+1` into the editor window and press `shift + enter` to execute the line your cursor is on or all highlighted lines. By default (you can change this in VS Code settings), it will print an "inline result" next to the code as well as in the REPL session below your editor. 
-
-![](2022-09-26-17-00-21.png)
+![](2022-09-27-11-50-23.png)
 
 This lends itself to an interactive workflow much like a jupyter notebook. This is the most basic workflow and suitable for writing scripts and exploring data, but if you are doing package development with unit tests and more complicated environments you will want to look at [Revise.jl](https://timholy.github.io/Revise.jl/stable/).
+
+!!! note "Resources for learning Julia syntax"
+
+    While this tutorial is meant to be a self-contained introduction to using the Julia language, I can't realistically guide you through all the in's and out's of its syntax. Here are a list of references in order of increasing time commitment which will be useful to you to pick up the syntax and bridge it with your existing knowledge of python. 
+
+    1. [matlab-python-julia cheatsheet](https://cheatsheets.quantecon.org) - Quick way to see syntax differences between python and Julia for common operations
+    2. [The Fast Track to Julia](https://juliadocs.github.io/Julia-Cheat-Sheet/) - Overview of the Julia language in one page
+    3. [Official Julia languages documentation](https://docs.julialang.org/en/v1/) - Comprehensive overview of the entire language
+    4. [Julia for Talented Amateurs](https://www.youtube.com/c/juliafortalentedamateurs/videos) - Extensive youtube channel with tutorials on most parts of the language, data analysis, GPU computing, etc
 
 
 
 
 # The Julia package manager
 
-Julia packages such as `DifferentialEquations.jl` or `Plots.jl` are collections of functions which can be imported to provide additonal functionality to your Julia program. They are the same as libraries in other languages, for instance python's `numpy` and Julia's `LinearAlgebra.jl` provide similar functionality. 
+Julia packages such as DifferentialEquations.jl or Plots.jl are collections of functions which can be imported to provide additional functionality to your Julia program. They are equivalent to libraries in other languages, for instance, python's numpy and Julia's LinearAlgebra.jl provide similar functionality. 
+
+The Julia package manager, Pkg.jl, is itself a package, and it lets us import packages from various locations on the internet and manage them. It is essentially python's pyp and conda/venv all in one. 
+
+We can access Pkg.jl in two ways. 
+
+1. This is the less common way, but it can be accessed like any Julia package by typing `using Pkg` in either your editor window (with `shift+enter`) or the REPL. You can then import other packages (here Plots.jl) by typing `Pkg.add("Plots.jl")`. This will download Plots.jl from its official github repo to your `~/.julia/packages` folder and updates your project.toml file in `.julia/environments/1.8` which contains the default v1.8 environment. You can then access Plots.jl functions at any time by running `using Plots.jl` in Julia. 
+
+2. The more common way is using the built in REPL interface. Type `]` into your REPL window. The `julia>` prompt will change into `(@v1.8) pkg>` indicating it now accepts Pkg.jl functions (use backspace to return to `julia>`). We can type `add Plots` to do the same thing we did above. In addition to `add` you can also `remove`/`rm` packages, list all your current packages with `status`/`st`, or run unit tests for the package `test Plots`.
+
+!!! note "Accessing documentation and shell commands from the REPL"
+
+    Pkg.jl is not the only tool with a nice REPL interface. We can access the documentation for a function or function call by typing `?` which will change `julia>` into a `help?>` prompt. Copy and paste code you want to know more about there to get its docstring, examples, and often a list of similar functions. Try pasting `print("help me!")` into it.
+
+    Shell commands can also be called from the Julia REPL by typing `;` to get `shell>`. Typical shell commands like `ls` or `cd` work here exactly as they do in an external terminal.
+
+
+# Plotting in Julia 
+
+Making plots is probably the most fundamental thing you can do in scientific computing, and is also probably the quickest and most fun way to learn Julia. 
+
+To make a plot in Julia, run the following. 
+
+```@example
+using Plots
+plot(sin)
+savefig("f-plot.svg"); nothing # hide
+```
+![](f-plot.svg)
+
+
+# Making a linear solver with LU decomposition
+
+Let's write our first numerical algorithm! There are many cadiates for a first 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
