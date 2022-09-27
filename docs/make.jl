@@ -1,5 +1,6 @@
 using Documenter
 using JuliaTutorial
+using Plots
 
 makedocs(
     sitename = "JuliaTutorial",
