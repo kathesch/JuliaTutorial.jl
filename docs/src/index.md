@@ -5,8 +5,8 @@
 Welcome to JuliaTutorial.jl! The aim of this page is to get you quickly started with the Julia programming language.
 
 I think Julia is perhaps the most productive gateway to the world of numerical methods for scientific computing, and I hope this can be a self-contained resource to get you started with Julia, its ecosystem, and exploring numerical methods.
-What is Julia and why should you learn it
-!!! note 
+
+!!! note "What is Julia and why should you learn it"
 
     Julia is a scientific programming language comparable to python, matlab, fortran, and R. It was originally created in 2012 by Jeff Bezanson, Stefan Karpinski, Viral Shah (and others) in the MIT Computational Science and Aritifical Intelligence Lab (CSAIL) as an open source project. 
 
@@ -52,7 +52,7 @@ hello world
 
 The REPL is a great interface for using Julia quickly (to make a quick plot, overview your packages, or do a quick calculation), but we will need a robust IDE (Integrated Development Environment) to write more complex code. There are many IDE's for various programming languages including Julia, but the easiest and most fully featured one for Julia is VS Code which we will install in the next section. 
 
-!!! note On Julia versions
+!!! note "On Julia versions"
 
     Julia, like most actively used software, is under a constant state of development. This means you will find various older and newer versions of Julia out in the wild. These versions are distinguished by a version number, for example, 1.8.1 or 0.7.2. 
     
@@ -84,18 +84,19 @@ Search for "julia", and then click the blue install button.
 <img src="2022-09-26-15-00-34.png" width=200/>
 ```
 Next, let's make a .jl file to edit. Click new file.
-
+```@raw html
 <img src="2022-09-26-15-31-34.png" width=200/>
-
+```
 And select `Julia File` to initialize a blank Julia file.
+```@raw html
 <img src="2022-09-26-15-37-07.png" width=400/>
-
+```
 Finally, let's open up a REPL inside of VS Code (called the integrated terminal) using the default hotkey `ctrl + J + O`.
 
 Congratulations! We are now set-up for working with Julia. 
-
+```@raw html
 <img src="2022-09-26-15-43-27.png" width=400/>
-
+```
 
 !!! note "About VS Code"
 
