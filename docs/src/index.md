@@ -151,7 +151,7 @@ Making plots is probably the most fundamental thing you can do in scientific com
 
 To make a plot in Julia, run the following. 
 
-```@example
+```@example 1
 using Plots
 plot(sin)
 savefig("f-plot.svg"); nothing # hide
