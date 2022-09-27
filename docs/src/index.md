@@ -5,8 +5,8 @@
 Welcome to JuliaTutorial.jl! The aim of this page is to get you quickly started with the Julia programming language.
 
 I think Julia is perhaps the most productive gateway to the world of numerical methods for scientific computing, and I hope this can be a self-contained resource to get you started with Julia, its ecosystem, and exploring numerical methods.
-
-!!! note What is Julia and why should you learn it
+What is Julia and why should you learn it
+!!! note 
 
     Julia is a scientific programming language comparable to python, matlab, fortran, and R. It was originally created in 2012 by Jeff Bezanson, Stefan Karpinski, Viral Shah (and others) in the MIT Computational Science and Aritifical Intelligence Lab (CSAIL) as an open source project. 
 
@@ -80,8 +80,9 @@ The julia extension can be install by clicking the following extension button in
 ![](2022-09-26-14-51-45.png)
 
 Search for "julia", and then click the blue install button. 
+```@raw html
 <img src="2022-09-26-15-00-34.png" width=200/>
-
+```
 Next, let's make a .jl file to edit. Click new file.
 
 <img src="2022-09-26-15-31-34.png" width=200/>
@@ -96,7 +97,7 @@ Congratulations! We are now set-up for working with Julia.
 <img src="2022-09-26-15-43-27.png" width=400/>
 
 
-!!! note About VS Code
+!!! note "About VS Code"
 
     VS Code is designed to be a highly customizable, general purpose IDE which can work with just about any programming languages. It's most powerful features for Julia programming are:
     
