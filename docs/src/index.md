@@ -145,9 +145,9 @@ We can access Pkg.jl in two ways.
     Shell commands can also be called from the Julia REPL by typing `;` to get `shell>`. Typical shell commands like `ls` or `cd` work here exactly as they do in an external terminal.
 
 
-# Plotting in Julia 
+# Plotting
 
-Creating plots is probably the most fundamental thing you can do in scientific computing and it is also probably the quickest and most fun way to learn Julia. 
+Creating plots is probably the most fundamental thing you can do in scientific computing and it is also probably the quickest and most fun way to learn Julia.
 
 To make a plot in Julia, run the following. 
 
@@ -166,6 +166,7 @@ plot([1,2,4,2,5])
 savefig("g-plot.svg"); nothing # hide
 ```
 ![](g-plot.svg)
+
 Or put one plot on top of another by calling `plot!`. In Julia, it is convention to put a "!" after a function which modifies data. In this case, `plot!([1,2,4,2,5])` writes over our previous `plot(sin)`.
 
 ```@example 1
@@ -175,24 +176,35 @@ savefig("fg-plot.svg"); nothing # hide
 ```
 ![](fg-plot.svg)
 
+## Understanding the plot function call
+
 Let's take a minute to unpack the function call `plot(sin)`. The function `plot` is explicitly exported from the "Plots.jl" package, so we do not need to write `Plots.plot` to specify it (though we  could if we if we were working with several different plotting packages at once).
 
 This function consists of many "sub-functions" known as "methods" which are specialized to different arguments for the function. When you call the function `plot(sin)`, Julia sees that you called `plot` on a single argument `sin` of type `Function` (functions are treated as just another data type in Julia such as Int64, FLoat64, etc). It can then use a method of `plot` which calls the function `sin` on a few values (here -5 to 5) and displays them. In contrast, `plot([1,2,4,2,5])` uses a slightly different method where it just displays the values in an array. 
 
-!!! "Multiple dispatch and polymorphism"
+!!! note "Multiple dispatch and polymorphism"
 
-Being able to infer what method to call based on the types of arguments is known as ["multiple  dispatch"](https://en.wikipedia.org/wiki/Multiple_dispatch) and it is the core design feature of the Julia language. It let's us have a ton of flexibility into a single function call such as `plot`. 
+    Being able to infer what method to call based on the types of arguments is known as ["multiple  dispatch"](https://en.wikipedia.org/wiki/Multiple_dispatch) and it is the core design feature of the Julia language. It let's us have a ton of flexibility in a single function call such as `plot`. 
 
-The rough equivalent of multiple dispatch in other languages is function overloading (in C/C++) or objects in object oriented language (such as python and C++). The main purpose of multiple dispatch or object-oriented development is to create ["polymorphism"](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) in our program.
+    The rough equivalent of multiple dispatch in other languages is function overloading (in C/C++) or objects in object oriented language (such as python and C++). The main purpose of multiple dispatch or object-oriented development is to create ["polymorphism"](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) in our program.
 
-Without using polymorphism we would be forced to write an ugly interface like `plot_array` and `plot_function` which would be extremely difficult for anyone to remember, and if we wanted to change anything about how we plot in general, we'd have to rewrite the code for every single one of such functions.
+    Without using polymorphism we would be forced to write an ugly interface like `plot_array` and `plot_function` which would be extremely difficult for anyone to remember, and if we wanted to change anything about how we plot in general, we'd have to rewrite the code for every single one of such functions.
+
+# Making animations with macros
+
+It is also possible to make simple animations in Plot.jl using macros, a for loop, and a "lambda functions". Lambda functions or lambdas are simple, single-use functions.
+
+Let's make a sine wave which translates itself to the left. 
+
+```@example 1
+@gif for t in 1:10
+    plot(x->sin(x-t))
+end
+```
 
 
 
 
-allows us to write a single function and have it "do" as many things as possible with us having to write as little code as possible. 
-
-![](f-plot.svg)
 
 !!! note "The Julia plotting ecosystem"
 
