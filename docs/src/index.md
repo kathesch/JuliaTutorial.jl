@@ -163,14 +163,17 @@ We can also call `plot` on an array.
 
 ```@example 1
 plot([1,2,4,2,5])
+savefig("g-plot.svg"); nothing # hide
 ```
-
+![](g-plot.svg)
 Or put one plot on top of another by calling `plot!`. In Julia, it is convention to put a "!" after a function which modifies data. In this case, `plot!([1,2,4,2,5])` writes over our previous `plot(sin)`.
 
 ```@example 1
 plot(sin)
 plot!([1,2,4,2,5])
+savefig("fg-plot.svg"); nothing # hide
 ```
+![](fg-plot.svg)
 
 Let's take a minute to unpack the function call `plot(sin)`. The function `plot` is explicitly exported from the "Plots.jl" package, so we do not need to write `Plots.plot` to specify it (though we  could if we if we were working with several different plotting packages at once).
 
