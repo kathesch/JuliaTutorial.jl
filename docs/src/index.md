@@ -218,10 +218,11 @@ But instead of taking normal data types like `Int64`, *a macro takes a piece of 
 
 You will likely rarely write these, but you will encounter and use them everywhere in the Julia ecosystem. 
 
-The most used macro is `@time`
+The most used macro is `@time`.
 
 ```@example
 @time sin(pi/2)
+nothing # hide
 ```
 
 
