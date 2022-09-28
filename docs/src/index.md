@@ -73,13 +73,15 @@ It can also be installed via homebrew (on macs).
 
 You can then open VS Code by typing `code` into a terminal. 
 
-The Julia extension can be install by clicking the following extension button in the upper left of VS Code.
+1. The Julia extension can be install by clicking the following extension button in the upper left of VS Code.
 
 ![](2022-09-26-14-51-45.png)
 
-Search for "julia", and then click the blue install button. 
+2. Search for "julia", and then click the blue install button. 
 ```@raw html
-<img src="2022-09-26-15-00-34.png" width=200/>
+<p align="center">
+    <img src="2022-09-26-15-00-34.png" width=200/>
+</p>
 ```
 Next, let's make a .jl file to edit. Click new file.
 ```@raw html
