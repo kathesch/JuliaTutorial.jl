@@ -245,7 +245,7 @@ Most programming languages have constructions called "for loops" which allow exe
 
 In Julia the typical syntax is `for i in Iterators...end`. This is the fastest and most flexible way of making a for loop and is therefore the most commonly used for writing numerical methods.
 
- `i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps. 
+ `i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps.
 
     ```@example
     for i in 1:5
@@ -275,6 +275,36 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
         map(sin, 1:5)
         ```
 
+## Anonymous functions
+
+In many cases, we will want to define small functions that are essentially only used once in a program. Rather than clutter everything up with their definitions, we can use anonymous functions.
+
+These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments.  Compare with python `lambda x: sin(x).
+
+By putting them in parentheses, we can call them like a normal function. 
+
+```@example
+(x->sin(x))(pi/2) == sin(pi/2)
+```
+
+These are very useful if you have many functions you want to nest together. For instance, instead of writing something like:
+
+"""julia
+f(x,y) = plot(sin(cos(atan(y/x)+2)^2)
+"""
+or equivalently
+
+"""julia
+n = cos(atan(y/x)+2)^2
+b = sin(n)
+p = plot(b)
+"""
+
+We can get rid of a lot of parentheses by using a pipe operator `|>` which sends the output of the argument before it to the argument after it. This can often be much more readable. 
+
+"""julia
+f(x,y) = atan(y/x) |> _->cos(_+2)^2 |> sin |> plot
+"""
 
 
 
