@@ -147,40 +147,33 @@ We can access Pkg.jl in two ways.
 
 # Plotting
 
-Creating plots is probably the most fundamental thing you can do in scientific computing and it is also probably the quickest and most fun way to learn Julia.
+Creating plots is perhaps the most fundamental thing you can do in scientific computing and it is also probably the quickest and most fun way to learn Julia.
 
 To make a plot in Julia, run the following. 
 
 ```@example 1
 using Plots
 plot(sin)
-savefig("f-plot.svg"); nothing # hide
 ```
 
-![](f-plot.svg)
 
 We can also call `plot` on an array. 
 
 ```@example 1
 plot([1,2,4,2,5])
-savefig("g-plot.svg"); nothing # hide
 ```
-![](g-plot.svg)
 
 Or put one plot on top of another by calling `plot!`. In Julia, it is convention to put a "!" after a function which modifies data. In this case, `plot!([1,2,4,2,5])` writes over our previous `plot(sin)`.
 
 ```@example 1
 plot(sin)
 plot!([1,2,4,2,5])
-
 ```
-<!--
-savefig("fg-plot.svg"); nothing # hide
-![](fg-plot.svg)-->
+
 
 ## Understanding the plot function call
 
-Let's take a minute to unpack the function call `plot(sin)`. The function `plot` is explicitly exported from the "Plots.jl" package, so we do not need to write `Plots.plot` to specify it (though we  could if we if we were working with several different plotting packages at once).
+Let's take a minute to unpack the function call `plot(sin)`. The function `plot` is explicitly exported from the "Plots.jl" package, so we do not need to write `Plots.plot` to specify it (though we would if we if we were working with several different plotting packages at once).
 
 This function consists of many "sub-functions" known as "methods" which are specialized to different arguments for the function. When you call the function `plot(sin)`, Julia sees that you called `plot` on a single argument `sin` of type `Function` (functions are treated as just another data type in Julia such as Int64, FLoat64, etc). It can then use a method of `plot` which calls the function `sin` on a few values (here -5 to 5) which serve as the values on the x-axis. 
 
@@ -196,19 +189,35 @@ In contrast, `plot([1,2,4,2,5])` uses a slightly different method where it gener
 
     Without using polymorphism we would be forced to write an ugly interface like `plot_array` and `plot_function` which would be extremely difficult for anyone to remember, and if we wanted to change anything about how we plot in general, we'd have to rewrite the code for every single one of such functions.
 
-# Making animations with macros
+# Making animations
 
-It is also possible to make simple animations in Plot.jl using macros, a for loop, and a "lambda function". 
+It is also possible to make simple animations in Plots.jl.
 
-Lambda functions or lambdas are small, single-use functions tpyically used inside of another function call
-
-Let's make a sine wave which translates itself to the left. 
+Let's make a sine wave which translates itself to the right. 
 
 ```@example 1
 @gif for t in 0:0.5:6
     plot(x->sin(x-t))
 end
 ```
+
+There is a lot of syntax to unpack here, but I think it introduces a lot of important features of the Julia language.
+
+    1. `@gif` is a "macro"
+    2. `for...end` is a for loop
+    3. `0:0.5:6` is a range
+    4. `x->sin(x-t)` is an "anonymous function" or "lambda"
+
+
+
+
+
+## Understanding the @gif macro
+
+
+
+
+
 
 
 
@@ -223,7 +232,7 @@ end
 Let's write our first numerical algorithm! There are many candidates for 
 
 
-
+Anonymous functions in Julia use the folloing syntax `x->sin(x)`. Compare with python `lambda x: sin(x).
 
 
 
