@@ -204,9 +204,8 @@ end
 There is a lot of syntax to unpack here, but I think it introduces a lot of important features of the Julia language.
 
     1. `@gif` is a "macro"
-    2. `for...end` is a "for loop"
-    3. `0:0.5:6` is a "range"
-    4. `x->sin(x-t)` is an "anonymous function" or "lambda"
+    2. `for t in 0:0.5:6...end` is a "for loop"
+    3. `x->sin(x-t)` is an "anonymous function" or "lambda"
 
 ## Macros
 
@@ -218,12 +217,71 @@ But instead of taking normal data types like `Int64`, *a macro takes a piece of 
 
 You will likely rarely write these, but you will encounter and use them everywhere in the Julia ecosystem. 
 
-The most used macro is `@time`.
+The most useful macro in Base Julia is `@time` which will time the code after it. Just a function, you can read the documentation for a macro by using `?@time` in a REPL. 
 
-```@example
+```@example 1
 @time sin(pi/2)
 nothing # hide
 ```
+
+!!! note "Benchmarking"
+
+    Benchmarktools.jl has a more advanced version `@btime` which gives you more information than `@time`.
+
+    ```@example 1
+    @btime sin(pi/2)
+    nothing # hide
+    ```
+
+    BenchmarkTools.jl also allows you to profile code with `@benchmark`.  Here `@benchmark` runs code repeatedly and collects statistics on its performance. We can chain macros together, so lets add `@time` to check how long it to took get these statistics. 
+
+    ```@example 1
+    @time @benchmark plot(sin)
+    nothing # hide
+    ```
+## For loops
+
+Most programming languages have constructions called "for loops" which allow execution of code repeatedly. 
+
+In Julia the typical syntax is `for i in Iterators...end`. This is the fastest and most flexible way of making a for loop and is therefore the most commonly used for writing numerical methods.
+
+ `i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps. 
+
+    ```@example
+    for i in 1:5
+        print(i)
+    end
+    ```
+
+!!! note `Other common patterns for making for loops`
+
+    There are 3 other patterns for making for loops you will see in Julia (and other languages). These are typically used as a convenient syntax for applying some function element-wise to an array and returning the resulting array which is normally a little awkward to do with the usual for loop syntax. 
+
+    (1) A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation.
+
+        ```@example
+        [sin(i) for i in 1:5]
+        ```
+
+    (2) "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. 
+
+        ```@example
+        sin.(1:5)
+        ```
+
+    (3) The `map` function is yet another common way to apply a function to every element in an iterator.  
+
+        ```@example
+        map(sin, 1:5)
+        ```
+
+
+
+
+
+
+
+
 
 
 
