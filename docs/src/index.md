@@ -270,33 +270,34 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
 
     (1) A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation.
 
-        ```julia
-        julia> [sin(i) for i in 1:3]
-        3-element Vector{Float64}:
-        0.8414709848078965
-        0.9092974268256817
-        0.1411200080598672
-        ```
+    ```julia
+    julia> [sin(i) for i in 1:3]
+    3-element Vector{Float64}:
+    0.8414709848078965
+    0.9092974268256817
+    0.1411200080598672
+    ```
 
     (2) "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. 
 
-        ```julia
-            sin.(1:3)
-        3-element Vector{Float64}:
-        0.8414709848078965
-        0.9092974268256817
-        0.1411200080598672
-        ```
+    ```julia
+        sin.(1:3)
+    3-element Vector{Float64}:
+    0.8414709848078965
+    0.9092974268256817
+    0.1411200080598672
+    ```
 
     (3) The `map` function is yet another common way to apply a function to every element in an iterator.  
 
-        ```julia
-        julia> map(sin, 1:3)
-        3-element Vector{Float64}:
-        0.8414709848078965
-        0.9092974268256817
-        0.1411200080598672
-        ```
+    ```julia
+    julia> map(sin, 1:3)
+    3-element Vector{Float64}:
+    0.8414709848078965
+    0.9092974268256817
+    0.1411200080598672
+    ```
+
 ## Anonymous functions
 
 In many cases, we will want to define small functions that are essentially only used once in a program. Rather than clutter everything up with their definitions, we can use anonymous functions.
@@ -305,10 +306,10 @@ These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments. 
 
 By putting them in parentheses, we can call them like a normal function. 
 
-    ```julia
-    julia> (x->sin(x))(pi/2) == sin(pi/2)
-    true
-    ```
+```julia
+julia> (x->sin(x))(pi/2) == sin(pi/2)
+true
+```
     
 !!! note "Piping functions with |>"
 
