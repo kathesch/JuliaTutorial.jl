@@ -121,7 +121,7 @@ This lends itself to an interactive workflow much like a jupyter notebook. This 
     1. [matlab-python-julia cheatsheet](https://cheatsheets.quantecon.org) - Quick way to see syntax differences between python and Julia for common operations
     2. [The Fast Track to Julia](https://juliadocs.github.io/Julia-Cheat-Sheet/) - Overview of the Julia language in one page
     3. [Official Julia languages documentation](https://docs.julialang.org/en/v1/) - Comprehensive overview of the entire language
-    4. [Julia for Talented Amateurs](https://www.youtube.com/c/juliafortalentedamateurs/videos) - Extensive youtube channel with tutorials on most parts of the language, data analysis, GPU computing, etc
+    4. [Julia for Talented Amateurs](https://www.youtube.com/c/juliafortalentedamateurs/videos) - Extensive youtube channel with tutorials on most parts of the language, data analysis, GPU computing, etc. Also, many great memes. 
 
 
 
@@ -247,7 +247,7 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
 
 `i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps.
 
-    ```@example
+    ```@example 1
     for i in 1:5
         print(i)
     end
@@ -259,19 +259,19 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
 
     (1) A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation.
 
-        ```@example
+        ```@example 1
         [sin(i) for i in 1:5]
         ```
 
     (2) "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. 
 
-        ```@example
+        ```@example 1
         sin.(1:5)
         ```
 
     (3) The `map` function is yet another common way to apply a function to every element in an iterator.  
 
-        ```@example
+        ```@example 1
         map(sin, 1:5)
         ```
 
@@ -283,7 +283,7 @@ These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments. 
 
 By putting them in parentheses, we can call them like a normal function. 
 
-```@example
+```@example 1
 (x->sin(x))(pi/2) == sin(pi/2)
 ```
 
