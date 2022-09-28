@@ -79,9 +79,7 @@ You can then open VS Code by typing `code` into a terminal.
 
 2. Search for "julia", and then click the blue install button. 
 ```@raw html
-<p align="center">
     <img src="2022-09-26-15-00-34.png" width=200/>
-</p>
 ```
 Next, let's make a .jl file to edit. Click new file.
 ```@raw html
@@ -149,7 +147,7 @@ We can access Pkg.jl in two ways.
 
 # Plotting in Julia 
 
-Making plots is probably the most fundamental thing you can do in scientific computing, and is also probably the quickest and most fun way to learn Julia. 
+Creating plots is probably the most fundamental thing you can do in scientific computing and it is also probably the quickest and most fun way to learn Julia. 
 
 To make a plot in Julia, run the following. 
 
@@ -158,12 +156,50 @@ using Plots
 plot(sin)
 savefig("f-plot.svg"); nothing # hide
 ```
+
 ![](f-plot.svg)
+
+We can also call `plot` on an array. 
+
+```@example 1
+plot([1,2,4,2,5])
+```
+
+Or put one plot on top of another by calling `plot!`. In Julia, it is convention to put a "!" after a function which modifies data. In this case, `plot!([1,2,4,2,5])` writes over our previous `plot(sin)`.
+
+```@example 1
+plot(sin)
+plot!([1,2,4,2,5])
+```
+
+Let's take a minute to unpack the function call `plot(sin)`. The function `plot` is explicitly exported from the "Plots.jl" package, so we do not need to write `Plots.plot` to specify it (though we  could if we if we were working with several different plotting packages at once).
+
+This function consists of many "sub-functions" known as "methods" which are specialized to different arguments for the function. When you call the function `plot(sin)`, Julia sees that you called `plot` on a single argument `sin` of type `Function` (functions are treated as just another data type in Julia such as Int64, FLoat64, etc). It can then use a method of `plot` which calls the function `sin` on a few values (here -5 to 5) and displays them. In contrast, `plot([1,2,4,2,5])` uses a slightly different method where it just displays the values in an array. 
+
+!!! "Multiple dispatch and polymorphism"
+
+Being able to infer what method to call based on the types of arguments is known as ["multiple  dispatch"](https://en.wikipedia.org/wiki/Multiple_dispatch) and it is the core design feature of the Julia language. It let's us have a ton of flexibility into a single function call such as `plot`. 
+
+The rough equivalent of multiple dispatch in other languages is function overloading (in C/C++) or objects in object oriented language (such as python and C++). The main purpose of multiple dispatch or object-oriented development is to create ["polymorphism"](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) in our program.
+
+Without using polymorphism we would be forced to write an ugly interface like `plot_array` and `plot_function` which would be extremely difficult for anyone to remember, and if we wanted to change anything about how we plot in general, we'd have to rewrite the code for every single one of such functions.
+
+
+
+
+allows us to write a single function and have it "do" as many things as possible with us having to write as little code as possible. 
+
+![](f-plot.svg)
+
+!!! note "The Julia plotting ecosystem"
+
 
 
 # Making a linear solver with LU decomposition
 
-Let's write our first numerical algorithm! There are many cadiates for a first 
+Let's write our first numerical algorithm! There are many candidates for 
+
+
 
 
 
