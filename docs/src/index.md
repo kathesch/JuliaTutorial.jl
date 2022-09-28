@@ -245,7 +245,7 @@ Most programming languages have constructions called "for loops" which allow exe
 
 In Julia the typical syntax is `for i in Iterators...end`. This is the fastest and most flexible way of making a for loop and is therefore the most commonly used for writing numerical methods.
 
- `i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps.
+`i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps.
 
     ```@example
     for i in 1:5
@@ -287,24 +287,27 @@ By putting them in parentheses, we can call them like a normal function.
 (x->sin(x))(pi/2) == sin(pi/2)
 ```
 
-These are very useful if you have many functions you want to nest together. For instance, instead of writing something like:
 
-"""julia
-f(x,y) = plot(sin(cos(atan(y/x)+2)^2)
-"""
-or equivalently
+!!! note "Piping functions with `|>`"
 
-"""julia
-n = cos(atan(y/x)+2)^2
-b = sin(n)
-p = plot(b)
-"""
+    Anonymous functions are very useful if you have many functions you want to nest together. For instance, instead of writing something like:
 
-We can get rid of a lot of parentheses by using a pipe operator `|>` which sends the output of the argument before it to the argument after it. This can often be much more readable. 
+    """julia
+    f(x,y) = plot(sin(cos(atan(y/x)+2)^2)
+    """
+    or equivalently
 
-"""julia
-f(x,y) = atan(y/x) |> _->cos(_+2)^2 |> sin |> plot
-"""
+    """julia
+    n = cos(atan(y/x)+2)^2
+    b = sin(n)
+    p = plot(b)
+    """
+
+    We can get rid of a lot of parentheses by using a pipe operator `|>` which sends the output of the argument before it to the argument after it. This can often be much more readable. 
+
+    """julia
+    f(x,y) = atan(y/x) |> _->cos(_+2)^2 |> sin |> plot
+    """
 
 
 
