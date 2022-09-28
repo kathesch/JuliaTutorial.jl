@@ -228,16 +228,26 @@ nothing # hide
 
     Benchmarktools.jl has a more advanced version `@btime` which gives you more information than `@time`.
 
-    ```@example 1
-    @btime sin(pi/2)
-    nothing # hide
+    ```julia
+    julia> @btime sin(pi/2)
+    1.167 ns (0 allocations: 0 bytes)
     ```
 
     BenchmarkTools.jl also allows you to profile code with `@benchmark`.  Here `@benchmark` runs code repeatedly and collects statistics on its performance. We can chain macros together, so lets add `@time` to check how long it to took get these statistics. 
 
-    ```@example 1
-    @time @benchmark plot(sin)
-    nothing # hide
+    ```julia
+    >julia @time @benchmark plot(sin)
+    10.841423 seconds (247.36 M allocations: 5.504 GiB, 10.66% gc time, 0.31% compilation time)
+    BenchmarkTools.Trial: 5812 samples with 1 evaluation.
+    Range (min … max):  786.833 μs …   6.679 ms  ┊ GC (min … max): 0.00% … 80.84%
+    Time  (median):     805.958 μs               ┊ GC (median):    0.00%
+    Time  (mean ± σ):   858.419 μs ± 416.177 μs  ┊ GC (mean ± σ):  3.84% ±  6.87%
+
+    ██▆▄▃▃▂▂▁▁ ▁▁                                                 ▁
+    ██████████████▇▇▇▇▆▆▆▅▅▅▄▄▅▃▅▁▃▄▄▃▁▁▃▁▃▁▃▁▄▁▁▃▃▁▁▁▃▁▁▁▁▁▁▁▃▁▃ █
+    787 μs        Histogram: log(frequency) by time        1.6 ms <
+
+    Memory estimate: 497.41 KiB, allocs estimate: 21325.
     ```
 ## For loops
 
@@ -251,6 +261,7 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
     for i in 1:5
         print(i)
     end
+    nothing # hide
     ```
 
 !!! note `Other common patterns for making for loops`
@@ -259,20 +270,32 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
 
     (1) A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation.
 
-        ```@example 1
-        [sin(i) for i in 1:5]
+        ```julia
+        julia> [sin(i) for i in 1:3]
+        3-element Vector{Float64}:
+        0.8414709848078965
+        0.9092974268256817
+        0.1411200080598672
         ```
 
     (2) "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. 
 
-        ```@example 1
-        sin.(1:5)
+        ```julia
+            sin.(1:3)
+        3-element Vector{Float64}:
+        0.8414709848078965
+        0.9092974268256817
+        0.1411200080598672
         ```
 
     (3) The `map` function is yet another common way to apply a function to every element in an iterator.  
 
-        ```@example 1
-        map(sin, 1:5)
+        ```julia
+        julia> map(sin, 1:3)
+        3-element Vector{Float64}:
+        0.8414709848078965
+        0.9092974268256817
+        0.1411200080598672
         ```
 
 ## Anonymous functions
@@ -283,8 +306,9 @@ These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments. 
 
 By putting them in parentheses, we can call them like a normal function. 
 
-```@example 1
-(x->sin(x))(pi/2) == sin(pi/2)
+```julia
+julia> (x->sin(x))(pi/2) == sin(pi/2)
+true
 ```
 
 
