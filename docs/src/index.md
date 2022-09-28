@@ -213,7 +213,7 @@ Macros can be thought of as a generalization of the idea of a function.
 
 A function takes arguments which are various data types for instance `sin` takes in types of `Number` such as `Int64`, `Float64`, etc and gives you a value you would associate with `sin` from its mathematical definition.
 
-But instead of taking normal data types like `Int64`, *a macro takes a piece of Julia code as an argument*. This is an example of what is known as ["metaprogramming"](~:text=Metaprogramming is a programming technique,even modify itself while running.). In this case, `@gif` uses our for loop with a `plot` call inside as a recipe to make an animation. 
+But instead of taking normal data types like `Int64`, *a macro takes a piece of Julia code as an argument*. This is an example of what is known as ["metaprogramming"](https://en.wikipedia.org/wiki/Metaprogramming#:~:text=Metaprogramming%20is%20a%20programming%20technique,even%20modify%20itself%20while%20running.) is a programming technique,even modify itself while running.). In this case, `@gif` uses our for loop with a `plot` call inside as a recipe to make an animation. 
 
 You will likely rarely write these, but you will encounter and use them everywhere in the Julia ecosystem. 
 
@@ -264,7 +264,7 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
     nothing # hide
     ```
 
-!!! note `Other common patterns for making for loops`
+!!! note "Other common patterns for making for loops"
 
     There are 3 other patterns for making for loops you will see in Julia (and other languages). These are typically used as a convenient syntax for applying some function element-wise to an array and returning the resulting array which is normally a little awkward to do with the usual for loop syntax. 
 
@@ -297,7 +297,6 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
         0.9092974268256817
         0.1411200080598672
         ```
-
 ## Anonymous functions
 
 In many cases, we will want to define small functions that are essentially only used once in a program. Rather than clutter everything up with their definitions, we can use anonymous functions.
@@ -306,56 +305,31 @@ These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments. 
 
 By putting them in parentheses, we can call them like a normal function. 
 
-```julia
-julia> (x->sin(x))(pi/2) == sin(pi/2)
-true
-```
-
-
-!!! note "Piping functions with `|>`"
+    ```julia
+    julia> (x->sin(x))(pi/2) == sin(pi/2)
+    true
+    ```
+    
+!!! note "Piping functions with |>"
 
     Anonymous functions are very useful if you have many functions you want to nest together. For instance, instead of writing something like:
 
-    """julia
+    ```julia
     f(x,y) = plot(sin(cos(atan(y/x)+2)^2)
-    """
+    ```
     or equivalently
 
-    """julia
+    ```julia
     n = cos(atan(y/x)+2)^2
     b = sin(n)
     p = plot(b)
-    """
+    ```
 
     We can get rid of a lot of parentheses by using a pipe operator `|>` which sends the output of the argument before it to the argument after it. This can often be much more readable. 
 
-    """julia
+    ```julia
     f(x,y) = atan(y/x) |> _->cos(_+2)^2 |> sin |> plot
-    """
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Understanding the @gif macro
-
-
+    ```
 
 
 
