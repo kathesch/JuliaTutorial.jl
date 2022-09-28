@@ -189,7 +189,7 @@ In contrast, `plot([1,2,4,2,5])` uses a slightly different method where it gener
 
     Without using polymorphism we would be forced to write an ugly interface like `plot_array` and `plot_function` which would be extremely difficult for anyone to remember, and if we wanted to change anything about how we plot in general, we'd have to rewrite the code for every single one of such functions.
 
-# Making animations
+# Making animations with a few important language features
 
 It is also possible to make simple animations in Plots.jl.
 
@@ -204,9 +204,34 @@ end
 There is a lot of syntax to unpack here, but I think it introduces a lot of important features of the Julia language.
 
     1. `@gif` is a "macro"
-    2. `for...end` is a for loop
-    3. `0:0.5:6` is a range
+    2. `for...end` is a "for loop"
+    3. `0:0.5:6` is a "range"
     4. `x->sin(x-t)` is an "anonymous function" or "lambda"
+
+## Macros
+
+Macros can be thought of as a generalization of the idea of a function.
+
+A function takes arguments which are various data types for instance `sin` takes in types of `Number` such as `Int64`, `Float64`, etc and gives you a value you would associate with `sin` from its mathematical definition.
+
+But instead of taking normal data types like `Int64`, *a macro takes a piece of Julia code as an argument*. This is an example of what is known as ["metaprogramming"](~:text=Metaprogramming is a programming technique,even modify itself while running.). In this case, `@gif` uses our for loop with a `plot` call inside as a recipe to make an animation. 
+
+You will likely rarely write these, but you will encounter and use them everywhere in the Julia ecosystem. 
+
+The most used macro is `@time`
+
+```@example
+@time sin(pi/2)
+```
+
+
+
+
+
+
+
+
+
 
 
 
