@@ -455,8 +455,8 @@ From here we can see $y_i$ is just $b_i$ minus all the previous values of $y_{i-
 $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
 
 Let's write a small Julia function which compute this.
-```@example 2
-    using LinearAlgebra, BenchmarkTools
+```@example 1
+    using LinearAlgebra
     
     A = rand(5,5)
     b = rand(5)
@@ -465,7 +465,7 @@ Let's write a small Julia function which compute this.
     @time l\b
 ```
 
-```@example 2
+```@example 1
 function forward_elimination(L,b)
     n = size(L,1)
     y = zeros(5)
@@ -476,7 +476,6 @@ function forward_elimination(L,b)
 end
 
 @time forward_elimination(L,b)
-
 ```
 
 
