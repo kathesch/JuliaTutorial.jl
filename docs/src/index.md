@@ -486,8 +486,11 @@ end
 forward_elimination!(L,b)
 ```
 
-```@example 1
+```@setup
 b = [1,2,3,4,5] # hide 
+```
+
+```@example 1
 function forward_elimination_compact!(L,b)
     n = size(L,1)
     for i in 1:n
@@ -508,25 +511,10 @@ nothing # hide
 @btime forward_elimination!(L,b)
 nothing # hide
 ```
-```@example 1
+```@example 2
 @btime forward_elimination_compact!(L,b)
 nothing # hide
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -554,7 +542,18 @@ y_{n} \\
 \end{equation}
 ```
 
+By a very similar analysis as forward elimination, we can inspect this and convert it into a slice of mathemtical Julia code. 
 
+````@example 1
+function backward_elimination(U,y)
+    n = size(U,1)
+    x = zeros(n)
+    for i in 1:n
+        x[i] = 1/U[i,i]*(y[i] - sum(U[i,j]*x[j] for j=1+i:n; init=0))
+    end
+    return x
+end
+```
 
 
 
