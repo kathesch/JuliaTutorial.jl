@@ -441,13 +441,13 @@ b_{2}\\
 b_{n} \\
 \end{bmatrix} 
 
-\end{equation}\]</p><p>From here we can see <span>$y_i$</span> is just <span>$b_i$</span> minus all the previous values of <span>$y_{i-1}$</span> to <span>$y_{1}$</span> multiplied by <span>$l_{i,i-1}$</span> to <span>$l_{i,1}$</span>. You can think of the range <span>$l_{i,i-1}$</span>:<span>$l_{i,1}$</span> as being just the the values to left of the 1 on the row corresponding to <span>$y_{i}$</span>.</p><p class="math-container">\[y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}\]</p><pre><code class="language-julia hljs">    using LinearAlgebra
+\end{equation}\]</p><p>From here we can see <span>$y_i$</span> is just <span>$b_i$</span> minus all the previous values of <span>$y_{i-1}$</span> to <span>$y_{1}$</span> multiplied by <span>$l_{i,i-1}$</span> to <span>$l_{i,1}$</span>. You can think of the range <span>$l_{i,i-1}$</span>:<span>$l_{i,1}$</span> as being just the the values to left of the 1 on the row corresponding to <span>$y_{i}$</span>.</p><p class="math-container">\[y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}\]</p><pre><code class="language-julia hljs">using LinearAlgebra
 
-    A = rand(5,5)
-    b = [1,2,3,4,5]
-    L,U = lu(A, NoPivot()) # With pivoting turned off
+A = rand(5,5)
+b = [1,2,3,4,5]
+L,U = lu(A, NoPivot()) # With pivoting turned off
 
-    @time L\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  0.684712 seconds (462.16 k allocations: 23.090 MiB, 99.97% compilation time)</code></pre><pre><code class="language-julia hljs">function forward_elimination!(L,b)
+@time L\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  0.604787 seconds (462.15 k allocations: 23.086 MiB, 99.97% compilation time)</code></pre><pre><code class="language-julia hljs">function forward_elimination!(L,b)
     n = size(L,1)
     y = zeros(5)
     for i in 1:n
@@ -467,41 +467,33 @@ end
 
 forward_elimination_compact!(L,b)
 nothing # hide</code></pre><pre><code class="language-julia hljs">using BenchmarkTools
-@btime L\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  214.769 ns (1 allocation: 96 bytes)</code></pre><pre><code class="language-julia hljs">using BenchmarkTools
-@btime forward_elimination!(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  71.176 ns (1 allocation: 96 bytes)</code></pre><p>@example 1 using BenchmarkTools @btime forward<em>elimination</em>compact(L,b) nothing # hide</p><pre><code class="nohighlight hljs">
-
-
-
-
-
-
-
-
-
-
-</code></pre><p>math \begin{equation} \begin{bmatrix} u<em>{11}  &amp; u</em>{12} &amp; \dots &amp;u<em>{1n}\
- &amp; u</em>{22} &amp; \dots &amp; u<em>{2n}\
- &amp; &amp; \ddots &amp; \vdots\   &amp;  &amp; &amp; u</em>{nn} \
-\end{bmatrix}  \begin{bmatrix} x<em>{1} \
-x</em>{2}\
-\vdots\
-x<em>{n} \
-\end{bmatrix}  = \begin{bmatrix} y</em>{1} \
-y<em>{2}\
-\vdots \
-y</em>{n} \
-\end{bmatrix}  \end{equation}</p><pre><code class="nohighlight hljs">
-
-
-
-
-
-
-
-
-
-
-
-
-In base Julia (and matlab and other languages), solving a linear system is so common, that it has its own infix operator called the left division operator `\` which solves the matrix equation Ax=b for x. Let&#39;s test it really quickly. 
-</code></pre><p>@example A = rand(5,5) #Random 5 by 5 array b = rand(5) x = A\b @time A*x - b #Should be approximately 0 ```</p><p>Under the hood, <code>\</code> is what is known as a polyalgorithm. Based off of what type of matrix you give, i.e. is it square, sparse, has certain symmetries, etc it is able to dispatch a &quot;pretty good&quot; algorithm for the job. </p><p>What algorithm is &quot;pretty good&quot; is actually very relative to your exact use, so you might need to make explicit choices about your algorithm by using packages such as <a href="http://linearsolve.sciml.ai/stable/solvers/solvers/">LinearSolve.jl</a>. Particularly for large systems, in extreme cases, algorithm choice can mean the difference between solving it in hours or seconds. </p><p>This is why that although you will likely never actually use your own linear solver, it can be helpful to know what different algorithms exist and have some insight as to what they are good at. For instance, that LU decomposition is fastest for small, dense matrices, singular value decomposition and qr algorithm are expensive, but can make up for it in precision, and that iterative methods are great for large systems compared to factorization methods (<a href="http://linearsolve.sciml.ai/stable/solvers/solvers/">from LinearSolver.jl docs</a>)</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Thursday 29 September 2022 21:59">Thursday 29 September 2022</span>. Using Julia version 1.8.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+@btime L\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  234.023 ns (1 allocation: 96 bytes)</code></pre><pre><code class="language-julia hljs">@btime forward_elimination!(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  73.691 ns (1 allocation: 96 bytes)</code></pre><pre><code class="language- hljs">@btime forward_elimination_compact(L,b)
+nothing # hide</code></pre><p class="math-container">\[\begin{equation}
+\begin{bmatrix}
+u_{11}  &amp; u_{12} &amp; \dots &amp;u_{1n}\\
+ &amp; u_{22} &amp; \dots &amp; u_{2n}\\
+ &amp; &amp; \ddots &amp; \vdots\\ 
+ &amp;  &amp; &amp; u_{nn} \\
+\end{bmatrix} 
+\begin{bmatrix}
+x_{1} \\
+x_{2}\\
+\vdots\\
+x_{n} \\
+\end{bmatrix} 
+=
+\begin{bmatrix}
+y_{1} \\
+y_{2}\\
+\vdots \\
+y_{n} \\
+\end{bmatrix} 
+\end{equation}\]</p><p>In base Julia (and matlab and other languages), solving a linear system is so common, that it has its own infix operator called the left division operator <code>\</code> which solves the matrix equation Ax=b for x. Let&#39;s test it really quickly. </p><pre><code class="language-julia hljs">A = rand(5,5) #Random 5 by 5 array
+b = rand(5)
+x = A\b
+@time A*x - b #Should be approximately 0</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
+ 2.220446049250313e-16
+ 1.1102230246251565e-16
+ 1.1102230246251565e-16
+ 0.0
+ 1.1102230246251565e-16</code></pre><p>Under the hood, <code>\</code> is what is known as a polyalgorithm. Based off of what type of matrix you give, i.e. is it square, sparse, has certain symmetries, etc it is able to dispatch a &quot;pretty good&quot; algorithm for the job. </p><p>What algorithm is &quot;pretty good&quot; is actually very relative to your exact use, so you might need to make explicit choices about your algorithm by using packages such as <a href="http://linearsolve.sciml.ai/stable/solvers/solvers/">LinearSolve.jl</a>. Particularly for large systems, in extreme cases, algorithm choice can mean the difference between solving it in hours or seconds. </p><p>This is why that although you will likely never actually use your own linear solver, it can be helpful to know what different algorithms exist and have some insight as to what they are good at. For instance, that LU decomposition is fastest for small, dense matrices, singular value decomposition and qr algorithm are expensive, but can make up for it in precision, and that iterative methods are great for large systems compared to factorization methods (<a href="http://linearsolve.sciml.ai/stable/solvers/solvers/">from LinearSolver.jl docs</a>)</p></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Thursday 29 September 2022 22:01">Thursday 29 September 2022</span>. Using Julia version 1.8.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
