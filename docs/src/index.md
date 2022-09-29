@@ -464,14 +464,14 @@ $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
 
 
 ```@example 1
-    using LinearAlgebra
-    
-    A = rand(5,5)
-    b = [1,2,3,4,5]
-    L,U = lu(A, NoPivot()) # With pivoting turned off
+using LinearAlgebra
 
-    @time L\b
-    nothing # hide
+A = rand(5,5)
+b = [1,2,3,4,5]
+L,U = lu(A, NoPivot()) # With pivoting turned off
+
+@time L\b
+nothing # hide
 ```
 
 ```@example 1
@@ -508,14 +508,15 @@ using BenchmarkTools
 nothing # hide
 ```
 ```@example 1
-using BenchmarkTools
 @btime forward_elimination!(L,b)
 nothing # hide
+```
 ```@example 1
-using BenchmarkTools
 @btime forward_elimination_compact(L,b)
 nothing # hide
 ```
+
+
 
 
 
