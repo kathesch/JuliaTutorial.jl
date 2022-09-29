@@ -467,7 +467,7 @@ $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
 using LinearAlgebra
 
 A = rand(5,5)
-b = [1,2,3,4,5]
+b = [1.2, -2.3, 5.6, 4.5, 0.01]
 L,U = lu(A, NoPivot()) # With pivoting turned off
 
 L\b
@@ -478,23 +478,19 @@ function forward_elimination!(L,b)
     n = size(L,1)
     y = zeros(n)
     for i in 1:n
-        y[i] = b[i] - sum(L[i,j]*y[j] for j=1:i-1; init=0)
+        y[i] = b[i] - sum(L[i,j] * y[j] for j=1:i-1; init=0)
     end
     return y
 end
 
 forward_elimination!(L,b)
 ```
-
-```@setup
-b = [1,2,3,4,5] # hide 
-```
-
 ```@example 1
+b = [1.2, -2.3, 5.6,4.5,0.01] # hide
 function forward_elimination_compact!(L,b)
     n = size(L,1)
     for i in 1:n
-        b[i] -= sum(L[i,j]*b[j] for j=1:i-1; init=0)
+        b[i] -= sum(L[i,j] * b[j] for j=1:i-1; init=0)
     end
     return b
 end
@@ -542,19 +538,42 @@ y_{n} \\
 \end{equation}
 ```
 
-By a very similar analysis as forward elimination, we can inspect this and convert it into a slice of mathemtical Julia code. 
+We can use a similar analysis as forward elimination. Here we have. 
 
-````@example 1
-function backward_elimination(U,y)
+$$x_i = \frac{1}{u_{ii}}\left(y_i -\sum\limits_{j=1+i}^{n}u_{ij}x_{j}\right)$$
+
+Let's define a function that is as close to this expression as possible. 
+
+```@example 1
+function backward_elimination!(U,y)
     n = size(U,1)
     x = zeros(n)
     for i in 1:n
-        x[i] = 1/U[i,i]*(y[i] - sum(U[i,j]*x[j] for j=1+i:n; init=0))
+        x[i] = 1/U[i,i]*(y[i] - sum(U[i,j] * x[j] for j=1+i:n; init=0))
     end
     return x
 end
+nothing #hide
 ```
 
+Test this expression. 
+
+```@example 1
+y = b
+U\y
+```
+
+```@example 1
+backward_elimination!(U,y)
+```
+
+
+In general, the ideal way of approaching a implementing numerical method is:
+
+1. Write a well defined mathematical expression for the system of interest.
+2. Come up with a clean way to execute it on a computer. As close to math syntax as possible. 
+3. Write a test that can give some insight into how close the function you wrote in 2. reflects the expression you wrote in 1.
+4. Optimize the heck out of 2. and compare with earlier tests for accuracy. 
 
 
 
