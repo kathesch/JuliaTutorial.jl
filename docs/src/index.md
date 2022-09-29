@@ -467,7 +467,7 @@ $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
     using LinearAlgebra
     
     A = rand(5,5)
-    b = rand(5)
+    b = [1,2,3,4,5]
     L,U = lu(A, NoPivot()) # With pivoting turned off
 
     @time L\b
@@ -484,11 +484,12 @@ function forward_elimination!(L,b)
     return y
 end
 
-forward_elimination(L,b)
+forward_elimination!(L,b)
 nothing # hide
 ```
 
 ```@example 1
+b = [1,2,3,4,5] # hide
 function forward_elimination_compact!(L,b)
     n = size(L,1)
     for i in 1:n
@@ -497,7 +498,7 @@ function forward_elimination_compact!(L,b)
     return b
 end
 
-forward_elimination_compact(L,b)
+forward_elimination_compact!(L,b)
 nothing # hide
 ```
 
@@ -510,7 +511,7 @@ nothing # hide
 using BenchmarkTools
 @btime forward_elimination!(L,b)
 nothing # hide
-``````@example 1
+```@example 1
 using BenchmarkTools
 @btime forward_elimination_compact(L,b)
 nothing # hide
