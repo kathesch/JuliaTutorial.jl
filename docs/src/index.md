@@ -374,15 +374,17 @@ There are many candidates for a "hello world" numerical algorithm, for instance 
 
 LU decomposition, despite its modern name, has a long history. It can be thought of as simply gaussian elimination (only popularized by Gauss - Newton invented it in the Western world). This technique was first documented by Chinese mathematicians in AD 179 who used a unique form of computational tool known as [rod calculus](https://en.wikipedia.org/wiki/Rod_calculus) to execute the algorithm. This was one of the earliest formal uses of something like a computer algorithm as well as solving a linear system of equations, an ubiquitous task in scientific computing. 
 
-Let's ask [wikipedia](https://en.wikipedia.org/wiki/Gaussian_elimination#Example_of_the_algorithm) what the gaussian elimination looks like as a starting point for our algorithm. 
+Let's start from this [wikipedia](https://en.wikipedia.org/wiki/Gaussian_elimination#Example_of_the_algorithm) example of what the gaussian elimination looks like as a starting point for our algorithm. 
 
-![](2022-09-29-06-22-00.png)
+```@raw html
+<img src="2022-09-29-06-22-00.png" width=400/>
+```
 
 Without doing any kind of pivots in our augmented matrix (exchange of rows), our takeaway from this should be that solving a matrix looks a bit like manipulating it into a upper triangular form followed by a lower triangular form yielding an identity matrix and a solution. 
 
 More explicitly, starting from the first column of that (augmented) matrix $A_{aug}$, we apply exactly the row operations (adding and multiplying one row of a matrix to another) such that we zero out the elements below the diagonal. Do this for every column of the matrix. Then we do the same thing except in reverse starting from the last column of the matrix and above the diagonal to get our identity matrix. 
 
-We can think of the first step as multiplying some matrix $L^{-1}$ to $A$ to form an upper triangular matrix $U$. $$L^{-1}A=U$$ By inverting this matrix and enforcing a uniqueness condition on $L$ such that we have as many free variables $LU$ as in $A$ (L must be lower triangular and have diagonal entries equal to 1), we recover the LU decomposition. For example:
+We can think of the first step as multiplying some matrix $L^{-1}$ to $A$ to form an upper triangular matrix $U$. $$L^{-1}A=U$$ By inverting this matrix and enforcing a uniqueness condition on $L$ such that we have as many free variables $LU$ as in $A$ ($L$ must be lower triangular and have diagonal entries equal to 1), we recover the LU decomposition. For example:
 
 ```math
 \begin{equation}
