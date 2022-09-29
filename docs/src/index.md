@@ -485,9 +485,10 @@ function forward_elimination(L,b)
 end
 
 forward_elimination(L,b)
+nothing # hide
 ```
 
-```julia
+```@example 1
 function forward_elimination_compact(L,b)
     n = size(L,1)
     for i in 1:n
@@ -497,6 +498,7 @@ function forward_elimination_compact(L,b)
 end
 
 forward_elimination_compact(L,b)
+nothing # hide
 ```
 
 
