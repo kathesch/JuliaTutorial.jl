@@ -417,8 +417,8 @@ There is one small issue with this scheme in that if $a_{11}$ is 0 or just very 
 Our numerical scheme will have three parts. 
 
 1. Compute L and U given A (LU decomposition)
-2. Solve Ly = b for y. (Forward elimination)
-3. Solve Ux = y for x.  (Backward elimination)
+2. Solve Ly = b for y. (forward elimination)
+3. Solve Ux = y for x.  (backward elimination)
 
 If we have $LU=A$, then solving $Ax=b$ is just solving $$LUx=b$$.
 First solve for $Ux$ with $Ux = L^{-1}b$, then $x$ with $x=U^{-1}L^{-1}b$.
@@ -452,7 +452,37 @@ b_{n} \\
 
 From here we can see $y_i$ is just $b_i$ minus all the previous values of $y_{i-1}$ to $y_{1}$ multiplied by $l_{i,i-1}$ to $l_{i,1}$. You can think of the range $l_{i,i-1}$:$l_{i,1}$ as being just the the values to left of the 1 on the row corresponding to $y_{i}$.
 
-$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$
+$$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
+
+Let's write a small Julia function which compute this.
+```@example 2
+    using LinearAlgebra, BenchmarkTools
+    
+    A = rand(5,5)
+    b = rand(5)
+    l,u = lu(A, NoPivot())
+
+    @time l\b
+```
+
+```@example 2
+function forward_elimination(L,b)
+    n = size(L,1)
+    y = zeros(5)
+    for i in 1:n
+        y[i] = b[i] - sum(L[i,j]*y[j] for j=1:i-1 if i-1 != 0; init=0)
+    end
+    return y
+end
+
+@time forward_elimination(L,b)
+
+```
+
+
+
+
+
 
 ```math
 \begin{equation}
@@ -475,7 +505,6 @@ y_{2}\\
 \vdots \\
 y_{n} \\
 \end{bmatrix} 
-
 \end{equation}
 ```
 
