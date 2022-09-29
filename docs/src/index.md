@@ -464,18 +464,18 @@ $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
 
 
 ```@example 1
-    using LinearAlgebra, BenchmarkTools
+    using LinearAlgebra
     
     A = rand(5,5)
     b = rand(5)
-    L,U = lu(A, NoPivot())
+    L,U = lu(A, NoPivot()) # With pivoting turned off
 
     @time L\b
     nothing # hide
 ```
 
 ```@example 1
-function forward_elimination(L,b)
+function forward_elimination!(L,b)
     n = size(L,1)
     y = zeros(5)
     for i in 1:n
@@ -489,7 +489,7 @@ nothing # hide
 ```
 
 ```@example 1
-function forward_elimination_compact(L,b)
+function forward_elimination_compact!(L,b)
     n = size(L,1)
     for i in 1:n
         b[i] -= sum(L[i,j]*b[j] for j=1:i-1; init=0)
@@ -500,6 +500,22 @@ end
 forward_elimination_compact(L,b)
 nothing # hide
 ```
+
+```@example 1
+using BenchmarkTools
+@btime L\b
+nothing # hide
+```
+```@example 1
+using BenchmarkTools
+@btime forward_elimination!(L,b)
+nothing # hide
+``````@example 1
+using BenchmarkTools
+@btime forward_elimination_compact(L,b)
+nothing # hide
+```
+
 
 
 
