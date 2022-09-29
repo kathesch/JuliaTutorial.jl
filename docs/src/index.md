@@ -268,7 +268,7 @@ nothing # hide
 
     There are 3 other patterns for making for loops you will see in Julia (and other languages). These are typically used as a convenient syntax for applying some function element-wise to an array and returning the resulting array which is normally a little awkward to do with the usual for loop syntax. 
 
-    (1) A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation.
+    1. A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation.
 
     ```julia
     julia> [sin(i) for i in 1:3]
@@ -278,7 +278,7 @@ nothing # hide
     0.1411200080598672
     ```
 
-    (2) "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. 
+    2. "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. For [infix(https://en.wikipedia.org/wiki/Infix_notation) operators] such as `+` you can put it before the operator such as `[1:3] .+ [1:3]` or `.+(1:3,1:3)`.
 
     ```julia
         sin.(1:3)
@@ -288,7 +288,7 @@ nothing # hide
     0.1411200080598672
     ```
 
-    (3) The `map` function is yet another common way to apply a function to every element in an iterator.  
+    3. The `map` function is yet another common way to apply a function to every element in an iterator.  
 
     ```julia
     julia> map(sin, 1:3)
@@ -341,30 +341,31 @@ I think one good informal place to start to get a feel for the scope of the curr
 Here also a lineup of the most notable packages that physical chemistry people might be interested in. 
 
 **Scientific Computing**
-* [SciML](https://docs.sciml.ai/stable/): This is a huge, unified ecosystem for doing scientific machine learning. Its documentation splash page is also a pretty good place to discover scientific computing packages both in and outside its framework. 
+* **[SciML](https://docs.sciml.ai/stable/)**: This is a huge, unified ecosystem for doing scientific machine learning. Its documentation splash page is also a good place to discover scientific computing packages both in and outside its framework. 
 
-* [DifferentialEquations.jl](https://diffeq.sciml.ai/stable/): The most notable member of the SciML ecosystem and probably the most comprehensive framework for numerically solving ordinary differential equations out there. 
+* **[DifferentialEquations.jl](https://diffeq.sciml.ai/stable/)**: The most notable member of the SciML ecosystem and probably the most comprehensive framework for numerically solving ordinary differential equations out there. 
 
-* [Flux.jl](https://fluxml.ai/Flux.jl/stable/): This is the main framework for machine learning in Julia and provide similar functionality to python's PyTorch. Compared to python machine learning frameworks, it is extremely lightweight and explicit. In fact, Flux.jl's documentation describes how you could have built Flux.jl yourself by simply making convenience functions for regressions using automatic differentiation. 
+* **[Flux.jl](https://fluxml.ai/Flux.jl/stable/)**: This is the main framework for machine learning in Julia and provide similar functionality to python's PyTorch. Compared to python machine learning frameworks, it is extremely lightweight and explicit. In fact, Flux.jl's documentation describes how you could have built Flux.jl yourself by simply making convenience functions for regressions using automatic differentiation. 
   
-* [Zygote.jl](https://fluxml.ai/Zygote.jl/latest/): Julia's main automatic differentiation package and is what powers Flux.jl. It has a similar lightweight/explict design philosophy. The book [Numerical Methods for Scientific Computing](https://www.equalsharepress.com/media/NMFSC.pdf) has a great tutorial on how to build an automatic differentiation tool in Julia similar to Zygote. 
-
+* **[Zygote.jl](https://fluxml.ai/Zygote.jl/latest/)**: Julia's main automatic differentiation package and is what powers Flux.jl. It has a similar lightweight/explict design philosophy. The book [Numerical Methods for Scientific Computing](https://www.equalsharepress.com/media/NMFSC.pdf) has a great tutorial on how to build an automatic differentiation tool in Julia similar to Zygote.
 
 **Plotting**
-* [Plots.jl](https://docs.juliaplots.org/stable/): The jack-of-all-trades standard plotting package. Has many backends and a simple syntax to make quick and dirty plots.
-* [Makie.jl](https://docs.makie.org/dev/): An extremely flexible GPU powered plotting package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
-* [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl): Specialized for making really clean, composable statistical plots. 
+* **[Plots.jl](https://docs.juliaplots.org/stable/)**: The jack-of-all-trades standard plotting package. Has many backends and a simple syntax to make quick and dirty plots.
+* **[Makie.jl](https://docs.makie.org/dev/)**: An extremely flexible `GPU powered plotting` package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
+* **[Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl)**: Specialized for making really clean, composable statistical plots. 
 
 **Computer Algebra System**
-* [MathLink](https://github.com/JuliaInterop/MathLink.jl): Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew and be up and running with Mathematica anywhere). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. 
-* [Symbolics.jl](https://symbolics.juliasymbolics.org/dev/): The pure Julia version of Mathematica. It is not as user friendly or flexible as Mathematica particuarly with symbolic integration, but it is *much* faster and auto-differentiable. 
-* [MetaTheory.jl](https://github.com/JuliaSymbolics/Metatheory.jl): The backend for Symbolics.jl. You can define generic relationships between data structure in an abstract algebra-y way such as introducing an identity operation or a distributive property. It can then use Julia's metaprogramming interface and a concept known as [E-graph](https://en.wikipedia.org/wiki/E-graph) saturation to simplify any expression of these structures. 
+* **[MathLink](https://github.com/JuliaInterop/MathLink.jl)**: Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew and be up and running with Mathematica anywhere). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. 
+* **[Symbolics.jl](https://symbolics.juliasymbolics.org/dev/)**: The pure Julia equivalent of Mathematica. It is not as user friendly or flexible as Mathematica particuarly with symbolic integration, but it is *much* faster and support auto-differentiable. 
+* **[MetaTheory.jl](https://github.com/JuliaSymbolics/Metatheory.jl)**: The backend for Symbolics.jl. You can define generic relationships between data structure in an abstract algebra-y way such as introducing an identity operation or a distributive property. It can then use Julia's metaprogramming interface and a concept known as [E-graph](https://en.wikipedia.org/wiki/E-graph) saturation to simplify expressions of these structures. 
 
 Physical Chemistry / Quantum
 
+* **[Quantum Optics](https://docs.qojulia.org)**
 
+* **[OpenQuantumTools](https://uscqserver.github.io/OpenQuantumTools.jl/dev/)**
 
-
+* **[Molly.jl](https://juliamolsim.github.io/Molly.jl/dev/)**
 
 
 
