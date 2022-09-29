@@ -179,7 +179,7 @@ This function consists of many "sub-functions" known as "methods" which are spec
 
 In contrast, `plot([1,2,4,2,5])` uses a slightly different method where it generates (x,y) coordinates based off of the index of the value in the array and the actual value of the array respectively.
 
- It is worth pointing out here that unlike python and many other programming languages, Julia has 1-based arrays meaning the first index is `1` not `0` which is why you see it plotted as 1 to 5 on the x-axis. 
+ It is worth pointing out here that unlike python and many other programming languages, Julia has 1-based arrays meaning the first index is `1` not `0` which is why you see the array plotted as 1 to 5 on the x-axis. 
 
 !!! note "Multiple dispatch and polymorphism"
 
@@ -201,11 +201,11 @@ Let's make a sine wave which translates itself to the right.
 end
 ```
 
-There is a lot of syntax to unpack here, but I think it introduces a lot of important features of the Julia language.
+There is a lot of syntax to unpack here, but I think it introduces a lot of unique and important features of the Julia language.
 
-    1. `@gif` is a "macro"
-    2. `for t in 0:0.5:6...end` is a "for loop"
-    3. `x->sin(x-t)` is an "anonymous function" or "lambda"
+ 1. `@gif` is a "macro"
+ 2. `for t in 0:0.5:6...end` is a "for loop"
+ 3. `x->sin(x-t)` is an "anonymous function" or "lambda"
 
 ## Macros
 
@@ -253,16 +253,16 @@ nothing # hide
 
 Most programming languages have constructions called "for loops" which allow execution of code repeatedly. 
 
-In Julia the typical syntax is `for i in Iterators...end`. This is the fastest and most flexible way of making a for loop and is therefore the most commonly used for writing numerical methods.
+In Julia the typical syntax is `for i in Iterators...end`. Note "white space" is not as important in Julia as it is in python `for i in 1:5 end` is a valid loop in Julia. This is the fastest and most flexible way of making a for loop and is therefore the most commonly used for writing numerical methods.
 
 `i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps.
 
-    ```@example 1
-    for i in 1:5
-        print(i)
-    end
-    nothing # hide
-    ```
+```@example 1
+for i in 1:5
+    print(i)
+end
+nothing # hide
+```
 
 !!! note "Other common patterns for making for loops"
 
@@ -302,7 +302,7 @@ In Julia the typical syntax is `for i in Iterators...end`. This is the fastest a
 
 In many cases, we will want to define small functions that are essentially only used once in a program. Rather than clutter everything up with their definitions, we can use anonymous functions.
 
-These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments.  Compare with python `lambda x: sin(x).
+These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments.  Compare with python `lambda x: sin(x)`.
 
 By putting them in parentheses, we can call them like a normal function. 
 
@@ -332,7 +332,101 @@ true
     f(x,y) = atan(y/x) |> _->cos(_+2)^2 |> sin |> plot
     ```
 
+# The Julia ecosystem
 
+The Julia ecosystem has ~8000 packages in the official registry. These can be viewed on [JuliaHub](https://juliahub.com/ui/Packages), and any one can be imported through Pkj.jl `add`. 
+
+I think one good informal place to start to get a feel for the scope of the current Julia community and it's ecosystem is by looking at the playlist of presentations for [JuliaCon 2022](https://www.youtube.com/playlist?list=PLP8iPy9hna6TRg6qJaBLJ-FRMi9Cp7gSX). From here we can see a focused primarily in applied mathematics, GPU and distributed computing, physics, economics, teaching, and statistics/data science. 
+
+Here also a lineup of the most notable packages that physical chemistry people might be interested in. 
+
+**Scientific Computing**
+* [SciML](https://docs.sciml.ai/stable/): This is a huge, unified ecosystem for doing scientific machine learning. Its documentation splash page is also a pretty good place to discover scientific computing packages both in and outside its framework. 
+
+* [DifferentialEquations.jl](https://diffeq.sciml.ai/stable/): The most notable member of the SciML ecosystem and probably the most comprehensive framework for numerically solving ordinary differential equations out there. 
+
+* [Flux.jl](https://fluxml.ai/Flux.jl/stable/): This is the main framework for machine learning in Julia and provide similar functionality to python's PyTorch. Compared to python machine learning frameworks, it is extremely lightweight and explicit. In fact, Flux.jl's documentation describes how you could have built Flux.jl yourself by simply making convenience functions for regressions using automatic differentiation. 
+  
+* [Zygote.jl](https://fluxml.ai/Zygote.jl/latest/): Julia's main automatic differentiation package and is what powers Flux.jl. It has a similar lightweight/explict design philosophy. The book [Numerical Methods for Scientific Computing](https://www.equalsharepress.com/media/NMFSC.pdf) has a great tutorial on how to build an automatic differentiation tool in Julia similar to Zygote. 
+
+
+**Plotting**
+* [Plots.jl](https://docs.juliaplots.org/stable/): The jack-of-all-trades standard plotting package. Has many backends and a simple syntax to make quick and dirty plots.
+* [Makie.jl](https://docs.makie.org/dev/): An extremely flexible GPU powered plotting package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
+* [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl): Specialized for making really clean, composable statistical plots. 
+
+**Computer Algebra System**
+* [MathLink](https://github.com/JuliaInterop/MathLink.jl): Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew and be up and running with Mathematica anywhere). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. 
+* [Symbolics.jl](https://symbolics.juliasymbolics.org/dev/): The pure Julia version of Mathematica. It is not as user friendly or flexible as Mathematica particuarly with symbolic integration, but it is *much* faster and auto-differentiable. 
+* [MetaTheory.jl](https://github.com/JuliaSymbolics/Metatheory.jl): The backend for Symbolics.jl. You can define generic relationships between data structure in an abstract algebra-y way such as introducing an identity operation or a distributive property. It can then use Julia's metaprogramming interface and a concept known as [E-graph](https://en.wikipedia.org/wiki/E-graph) saturation to simplify any expression of these structures. 
+
+Physical Chemistry / Quantum
+
+
+
+
+
+
+
+
+
+* PyPlot.jl: Interface for python's matplotlib. 
+
+
+
+
+
+
+
+
+
+
+Towards MDP.jl: The Julia Library of MD Potentials | Emmanuel Lujan | JuliaCon2021
+
+x Julia and Tensor Networks for Statistical Physics | Alfonso Rufino | JuliaCon2021
+
+x Theory is (nearly) implementation with Julia types | Gregor Kappler | JuliaCon2021
+
+LatticeQCD.jl: Simulation of quantum gauge fields | Akio Tomiya, Yuki Nagai | JuliaCon2021
+
+Using Julia to simulate non-linearity in photon counters | Dino Butron | JuliaCon2021
+
+Enhanced Sampling in Molecular Dynamics Simulations with Julia | Pablo Zubieta | JuliaCon2021
+
+x Introducing Chemellia: Machine Learning, with Atoms! | Rachel Kurchin | JuliaCon2021
+
+o Clapeyron.jl: An Extensible Implementation of Equations of State | Paul Yew et al | JuliaCon2021
+
+Simulating Chemical Kinetics with ReactionMechanismSimulator.jl | Matthew S. Johnson | JuliaCon 2021
+
+x FourierTools.jl Working with the Frequency Space | Felix Wechsler, Rainer Heintzmann | JuliaCon2021
+
+x Changing Physics education with Julia | George Datseris | JuliaCon2021
+
+x Quantum Computing with Julia | Workshop | JuliaCon 2021
+
+x JuliaMolSim: Computation with Atoms | Rachel Kurchin | JuliaCon 2022
+
+Modeling of Chemical Reaction Networks using Catalyst.jl | JuliaCon 2022
+
+O Simulating and Visualizing Quantum Annealing in Julia | Zachary Morrell | JuliaCon 2022
+
+x Automatic Differentiation for Quantum Electron Structure | M Towara, N Schmitz, G Kemlin
+
+G Quantum computing with ITensor and PastaQ | Matthew Fishman, Giacomo Torlai | JuliaCon 2022
+
+o QuantumCircuitOpt for Provably Optimal Quantum Circuit Design | Harsha Nagarajan | JuliaCon 2022
+
+o ProtoSyn.jl: a package for molecular manipulation and simulation | José Pereira | JuliaCon 2022
+
+x GapTrain: a faster and automated way to generate GA potentials | Letícia Madureira | JuliaCon 2022
+
+o RVSpectML: Precision Velocities from Spectroscopic Time Series | Eric B. Ford | JuliaCon 2022
+
+PHCpack.jl: Solving polynomial systems via homotopy
+
+
+We've mentioned a few packages in the Julia ecosystem such as DifferentialEquations.jl and Plots.jl, but what 
 
 
 
