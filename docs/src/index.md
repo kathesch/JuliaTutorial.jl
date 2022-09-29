@@ -334,107 +334,38 @@ true
 
 # The Julia ecosystem
 
-The Julia ecosystem has ~8000 packages in the official registry. These can be viewed on [JuliaHub](https://juliahub.com/ui/Packages), and any one can be imported through Pkj.jl `add`. 
+The Julia ecosystem has ~8000 packages in the official registry. These can be viewed and searched on [JuliaHub](https://juliahub.com/ui/Packages), and any one can be imported through Pkj.jl `add`. 
 
-I think one good informal place to start to get a feel for the scope of the current Julia community and it's ecosystem is by looking at the playlist of presentations for [JuliaCon 2022](https://www.youtube.com/playlist?list=PLP8iPy9hna6TRg6qJaBLJ-FRMi9Cp7gSX). From here we can see a focused primarily in applied mathematics, GPU and distributed computing, physics, economics, teaching, and statistics/data science. 
+I think one good informal place to start to get a feel for the scope of the current Julia community and its ecosystem is by looking at the playlist of presentations for [JuliaCon 2022](https://www.youtube.com/playlist?list=PLP8iPy9hna6TRg6qJaBLJ-FRMi9Cp7gSX). We can see a strong focus primarily in applied mathematics, GPU and distributed computing, physics, economics, teaching, and statistics/data science. 
 
-Here also a lineup of the most notable packages that physical chemistry people might be interested in. 
+Here is also a lineup of some notable packages that physical chemistry people might be interested in. 
 
 **Scientific Computing**
-* **[SciML](https://docs.sciml.ai/stable/)**: This is a huge, unified ecosystem for doing scientific machine learning. Its documentation splash page is also a good place to discover scientific computing packages both in and outside its framework. 
+* [SciML](https://docs.sciml.ai/stable/): This is a huge, unified ecosystem for doing scientific machine learning. Its documentation splash page is also a good place to discover scientific computing packages both in and outside its framework. 
 
-* **[DifferentialEquations.jl](https://diffeq.sciml.ai/stable/)**: The most notable member of the SciML ecosystem and probably the most comprehensive framework for numerically solving ordinary differential equations out there. 
+* [DifferentialEquations.jl](https://diffeq.sciml.ai/stable/): The most notable member of the SciML ecosystem and probably the most comprehensive framework for numerically solving ordinary differential equations out there. 
 
-* **[Flux.jl](https://fluxml.ai/Flux.jl/stable/)**: This is the main framework for machine learning in Julia and provide similar functionality to python's PyTorch. Compared to python machine learning frameworks, it is extremely lightweight and explicit. In fact, Flux.jl's documentation describes how you could have built Flux.jl yourself by simply making convenience functions for regressions using automatic differentiation. 
+* [Flux.jl](https://fluxml.ai/Flux.jl/stable/): This is the main framework for machine learning in Julia and provide similar functionality to python's PyTorch. Compared to python machine learning frameworks, it is extremely lightweight and explicit. In fact, Flux.jl's documentation describes how you could have built Flux.jl yourself by simply making convenience functions for regressions using automatic differentiation. 
   
-* **[Zygote.jl](https://fluxml.ai/Zygote.jl/latest/)**: Julia's main automatic differentiation package and is what powers Flux.jl. It has a similar lightweight/explict design philosophy. The book [Numerical Methods for Scientific Computing](https://www.equalsharepress.com/media/NMFSC.pdf) has a great tutorial on how to build an automatic differentiation tool in Julia similar to Zygote.
+* [Zygote.jl](https://fluxml.ai/Zygote.jl/latest/): Julia's main automatic differentiation package and is what powers Flux.jl. It has a similar lightweight/explict design philosophy. The book [Numerical Methods for Scientific Computing](https://www.equalsharepress.com/media/NMFSC.pdf) has a great tutorial on how to build an automatic differentiation tool in Julia similar to Zygote.
 
 **Plotting**
-* **[Plots.jl](https://docs.juliaplots.org/stable/)**: The jack-of-all-trades standard plotting package. Has many backends and a simple syntax to make quick and dirty plots.
-* **[Makie.jl](https://docs.makie.org/dev/)**: An extremely flexible `GPU powered plotting` package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
-* **[Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl)**: Specialized for making really clean, composable statistical plots. 
+* [Plots.jl](https://docs.juliaplots.org/stable/): The jack-of-all-trades standard plotting package. Has many backends and a simple syntax to make quick and dirty plots.
+* [Makie.jl](https://docs.makie.org/dev/): An extremely flexible `GPU powered plotting` package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
+* [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl): Specialized for making really clean, composable statistical plots. 
 
 **Computer Algebra System**
-* **[MathLink](https://github.com/JuliaInterop/MathLink.jl)**: Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew and be up and running with Mathematica anywhere). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. 
-* **[Symbolics.jl](https://symbolics.juliasymbolics.org/dev/)**: The pure Julia equivalent of Mathematica. It is not as user friendly or flexible as Mathematica particuarly with symbolic integration, but it is *much* faster and support auto-differentiable. 
-* **[MetaTheory.jl](https://github.com/JuliaSymbolics/Metatheory.jl)**: The backend for Symbolics.jl. You can define generic relationships between data structure in an abstract algebra-y way such as introducing an identity operation or a distributive property. It can then use Julia's metaprogramming interface and a concept known as [E-graph](https://en.wikipedia.org/wiki/E-graph) saturation to simplify expressions of these structures. 
+* [MathLink.jl](https://github.com/JuliaInterop/MathLink.jl): Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. 
+* [Symbolics.jl](https://symbolics.juliasymbolics.org/dev/): The pure Julia equivalent of Mathematica. It is not as user friendly or flexible as Mathematica particuarly with symbolic integration, but it is *much* faster and support auto-differentiation. 
+* [MetaTheory.jl](https://github.com/JuliaSymbolics/Metatheory.jl): The backend for Symbolics.jl. You can define generic relationships between data structure in an abstract algebra-y way such as introducing an identity operation or a distributive property. It can then use Julia's metaprogramming interface and a concept known as [E-graph](https://en.wikipedia.org/wiki/E-graph) saturation to simplify expressions of these structures. 
 
-Physical Chemistry / Quantum
+**Quantum**
 
-* **[Quantum Optics](https://docs.qojulia.org)**
+* [Quantum Optics.jl](https://docs.qojulia.org): This is the biggest quantum package in the Julia ecosystem and similar to python's [QuTip](https://qutip.org).
 
-* **[OpenQuantumTools](https://uscqserver.github.io/OpenQuantumTools.jl/dev/)**
-
-* **[Molly.jl](https://juliamolsim.github.io/Molly.jl/dev/)**
+* [OpenQuantumTools.jl](https://uscqserver.github.io/OpenQuantumTools.jl/dev/): Contains performant solvers, mostly using DifferentialEquations.jl for working with open quantum systems. 
 
 
-
-
-
-* PyPlot.jl: Interface for python's matplotlib. 
-
-
-
-
-
-
-
-
-
-
-Towards MDP.jl: The Julia Library of MD Potentials | Emmanuel Lujan | JuliaCon2021
-
-x Julia and Tensor Networks for Statistical Physics | Alfonso Rufino | JuliaCon2021
-
-x Theory is (nearly) implementation with Julia types | Gregor Kappler | JuliaCon2021
-
-LatticeQCD.jl: Simulation of quantum gauge fields | Akio Tomiya, Yuki Nagai | JuliaCon2021
-
-Using Julia to simulate non-linearity in photon counters | Dino Butron | JuliaCon2021
-
-Enhanced Sampling in Molecular Dynamics Simulations with Julia | Pablo Zubieta | JuliaCon2021
-
-x Introducing Chemellia: Machine Learning, with Atoms! | Rachel Kurchin | JuliaCon2021
-
-o Clapeyron.jl: An Extensible Implementation of Equations of State | Paul Yew et al | JuliaCon2021
-
-Simulating Chemical Kinetics with ReactionMechanismSimulator.jl | Matthew S. Johnson | JuliaCon 2021
-
-x FourierTools.jl Working with the Frequency Space | Felix Wechsler, Rainer Heintzmann | JuliaCon2021
-
-x Changing Physics education with Julia | George Datseris | JuliaCon2021
-
-x Quantum Computing with Julia | Workshop | JuliaCon 2021
-
-x JuliaMolSim: Computation with Atoms | Rachel Kurchin | JuliaCon 2022
-
-Modeling of Chemical Reaction Networks using Catalyst.jl | JuliaCon 2022
-
-O Simulating and Visualizing Quantum Annealing in Julia | Zachary Morrell | JuliaCon 2022
-
-x Automatic Differentiation for Quantum Electron Structure | M Towara, N Schmitz, G Kemlin
-
-G Quantum computing with ITensor and PastaQ | Matthew Fishman, Giacomo Torlai | JuliaCon 2022
-
-o QuantumCircuitOpt for Provably Optimal Quantum Circuit Design | Harsha Nagarajan | JuliaCon 2022
-
-o ProtoSyn.jl: a package for molecular manipulation and simulation | José Pereira | JuliaCon 2022
-
-x GapTrain: a faster and automated way to generate GA potentials | Letícia Madureira | JuliaCon 2022
-
-o RVSpectML: Precision Velocities from Spectroscopic Time Series | Eric B. Ford | JuliaCon 2022
-
-PHCpack.jl: Solving polynomial systems via homotopy
-
-
-We've mentioned a few packages in the Julia ecosystem such as DifferentialEquations.jl and Plots.jl, but what 
-
-
-
-
-
-
-!!! note "The Julia plotting ecosystem"
 
 
 
