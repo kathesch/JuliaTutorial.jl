@@ -201,7 +201,7 @@ Let's make a sine wave which translates itself to the right.
 end
 ```
 
-There is a lot of syntax to unpack here, but I think it introduces a lot of important language features of Julia.
+There is a lot of syntax to unpack here, but I think it introduces many important language features of Julia.
 
  1. `@gif` is a "macro"
  2. `for t in 0:0.5:6...end` is a "for loop"
@@ -370,11 +370,68 @@ Here is also a lineup of some notable packages that physical chemistry people mi
 
 Let's write our first numerical algorithm!
 
-There are many candidates for a "hello world" numerical algorithm, for instance [forward/backward euler methods](https://en.wikipedia.org/wiki/Euler_method), but I think LU decomposition is perhaps the most fundamental and instructive. 
+There are many candidates for a "hello world" numerical algorithm, for instance [forward/backward euler methods for ODEs](https://en.wikipedia.org/wiki/Euler_method), but I think LU decomposition is perhaps the most fundamental and instructive. 
 
-LU decomposition, despite its modern name, has a long history. It can be thought of as simply gaussian elimination (only popularized by Gauss - Newton invented it in the West). This technique was first documented by Chinese mathematicians in AD 179 who used a unique form of computational tool known as [rod calculus](https://en.wikipedia.org/wiki/Rod_calculus) to execute the algorithm. 
+LU decomposition, despite its modern name, has a long history. It can be thought of as simply gaussian elimination (only popularized by Gauss - Newton invented it in the Western world). This technique was first documented by Chinese mathematicians in AD 179 who used a unique form of computational tool known as [rod calculus](https://en.wikipedia.org/wiki/Rod_calculus) to execute the algorithm. This was one of the earliest formal uses of something like a computer algorithm as well as solving a linear system of equations, an ubiquitous task in scientific computing. 
 
-This was one of the earliest formal uses of something like a computer algorithm as well as solving a linear system of equations, an ubiquitous task in scientific computing. In base Julia (and matlab and other languages), solving a linear system is so common, that it has its own infix operators called the left division operator `\` which solves the matrix equation Ax=b for x by A\b=x. 
+Let's ask [wikipedia](https://en.wikipedia.org/wiki/Gaussian_elimination#Example_of_the_algorithm) what the gaussian elimination looks like as a starting point for our algorithm. 
+
+![](2022-09-29-06-22-00.png)
+
+Without doing any kind of pivots in our augmented matrix (exchange of rows), our takeaway from this should be that solving a matrix looks a bit like manipulating it into a upper triangular form followed by a lower triangular form yielding an identity matrix and a solution. 
+
+More explicitly, starting from the first column of that (augmented) matrix $A_{aug}$, we apply exactly the row operations (adding and multiplying one row of a matrix to another) such that we zero out the elements below the diagonal. Do this for every column of the matrix. Then we do the same thing except in reverse starting from the last column of the matrix and above the diagonal to get our identity matrix. 
+
+Another way of think about those "row operations that zero out elements" is as a matrix itself.
+
+We can think of the first step as applying some matrix $L^{-1}$ to $A$ to form an upper triangular matrix $U$. It turns out that the inverse of a lower triangular matrix, is also lower triangular, so $L$ and $L^-{1}$ are both lower triangular matrices, but let's work with $L$ on the right side of the equation.
+
+```math
+\begin{equation}
+
+\begin{bmatrix}
+a_{11} & a_{12} & a_{13} \\
+a_{21} & a_{22} & a_{23} \\
+a_{31} & a_{32} & a_{33} \\
+\end{bmatrix} 
+=
+\begin{bmatrix}
+    l_{11} & 0 & 0 \\
+    l_{21} & l_{22} & 0 \\
+    l_{31} & l_{32} & {l_{33}} \\
+\end{bmatrix}
+\begin{bmatrix}
+u_{11} & u_{12} & u_{13} \\
+0 & u_{22} & u_{23} \\
+0 & 0 & u_{33} \\
+\end{bmatrix} 
+\end{equation}
+```
+
+This almost the LU factorization $A=LU$. It has one problem in that it isn't unique. 
+
+
+
+
+
+In base Julia (and matlab and other languages), solving a linear system is so common, that it has its own infix operator called the left division operator `\` which solves the matrix equation Ax=b for x. Let's test it really quickly. 
+
+```@example
+A = rand(5,5) #Random 5 by 5 array
+b = rand(5)
+x = A\b
+@time A*x - b #Should be approximately 0
+```
+
+Under the hood, `\` is what is known as a polyalgorithm. Based off of what type of matrix you give, i.e. is it square, sparse, has certain symmetries, etc it is able to dispatch a "pretty good" algorithm for the job. 
+
+What algorithm is "pretty good" is actually very relative to your exact use, so you might need to make explicit choices about your algorithm by using packages such as [LinearSolve.jl](http://linearsolve.sciml.ai/stable/solvers/solvers/). Particularly for large systems, in extreme cases, algorithm choice can mean the difference between solving it in hours or seconds. 
+
+This is why that although you will likely never actually use your own linear solver, it can be helpful to know what different algorithms exist and have some insight as to what they are good at. For instance, that LU decomposition is fastest for small, dense matrices, singular value decomposition and qr algorithm are expensive, but can make up for it in precision, and that iterative methods are great for large systems compared to factorization methods ([from LinearSolver.jl docs](http://linearsolve.sciml.ai/stable/solvers/solvers/))
+
+
+
+
 
 
 
