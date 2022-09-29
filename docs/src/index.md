@@ -470,14 +470,13 @@ A = rand(5,5)
 b = [1,2,3,4,5]
 L,U = lu(A, NoPivot()) # With pivoting turned off
 
-@time L\b
-nothing # hide
+L\b
 ```
 
 ```@example 1
 function forward_elimination!(L,b)
     n = size(L,1)
-    y = zeros(5)
+    y = zeros(n)
     for i in 1:n
         y[i] = b[i] - sum(L[i,j]*y[j] for j=1:i-1 if i-1 != 0; init=0)
     end
@@ -485,7 +484,6 @@ function forward_elimination!(L,b)
 end
 
 forward_elimination!(L,b)
-nothing # hide
 ```
 
 ```@example 1
@@ -499,7 +497,6 @@ function forward_elimination_compact!(L,b)
 end
 
 forward_elimination_compact!(L,b)
-nothing # hide
 ```
 
 ```@example 1
@@ -512,9 +509,13 @@ nothing # hide
 nothing # hide
 ```
 ```@example 1
-@btime forward_elimination_compact(L,b)
+@btime forward_elimination_compact!(L,b)
 nothing # hide
 ```
+
+
+
+
 
 
 
