@@ -236,7 +236,7 @@ nothing # hide
     BenchmarkTools.jl also allows you to profile code with `@benchmark`.  Here `@benchmark` runs code repeatedly and collects statistics on its performance. We can chain macros together, so lets add `@time` to check how long it to took get these statistics (you can see the `@time` result at the top).
 
     ```julia
-    >julia @time @benchmark plot(sin)
+    julia> @time @benchmark plot(sin)
     10.841423 seconds (247.36 M allocations: 5.504 GiB, 10.66% gc time, 0.31% compilation time)
     BenchmarkTools.Trial: 5812 samples with 1 evaluation.
     Range (min … max):  786.833 μs …   6.679 ms  ┊ GC (min … max): 0.00% … 80.84%
@@ -268,7 +268,7 @@ nothing # hide
 
     There are 3 other patterns for making for loops you will see in Julia (and other languages). These are typically used as a convenient syntax for applying some function element-wise to an array and returning the resulting array which is normally a little awkward to do with the usual for loop syntax. 
 
-    1. A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation.
+    1. A "list comprehension". Very often we want to use a for loop to actually return an array for us rather than just loop through something. List comprehensions provide a nice syntax for this operation. 
 
     ```julia
     julia> [sin(i) for i in 1:3]
@@ -277,8 +277,16 @@ nothing # hide
     0.9092974268256817
     0.1411200080598672
     ```
+    There is an alternative form called a "generator comprehension" which is seen more often in numerical code. It is exactly the same as above, but it doesn't allocate memory (it behaves more like a `Range`). You can alsoprepend a function 
 
-    2. "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. For [infix(https://en.wikipedia.org/wiki/Infix_notation) operators] such as `+` you can put it before the operator such as `[1:3] .+ [1:3]` or `.+(1:3,1:3)`.
+    ```julia
+    julia> (i for i in 1:3)
+    Base.Generator{UnitRange{Int64}, typeof(identity)}(identity, 1:3)
+    julia>sum(i for i in 1:3)
+    6
+    ```
+
+    1. "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. For [infix(https://en.wikipedia.org/wiki/Infix_notation) operators] such as `+` you can put it before the operator such as `[1:3] .+ [1:3]` or `.+(1:3,1:3)`.
 
     ```julia
         sin.(1:3)
@@ -288,7 +296,7 @@ nothing # hide
     0.1411200080598672
     ```
 
-    3. The `map` function is yet another common way to apply a function to every element in an iterator.  
+    1. The `map` function is yet another common way to apply a function to every element in an iterator.  
 
     ```julia
     julia> map(sin, 1:3)
@@ -423,7 +431,7 @@ Our numerical scheme will have three parts.
 If we have $LU=A$, then solving $Ax=b$ is just solving $$LUx=b$$.
 First solve for $Ux$ with $Ux = L^{-1}b$, then $x$ with $x=U^{-1}L^{-1}b$.
 
-Let's implement forward/backward elimination in Julia first.
+Let's implement forward elimination in Julia first, as it is the easiest. 
 
 ```math
 \begin{equation}
@@ -454,15 +462,16 @@ From here we can see $y_i$ is just $b_i$ minus all the previous values of $y_{i-
 
 $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
 
-Let's write a small Julia function which compute this.
+
 ```@example 1
-    using LinearAlgebra
+    using LinearAlgebra, BenchmarkTools
     
     A = rand(5,5)
     b = rand(5)
-    l,u = lu(A, NoPivot())
+    L,U = lu(A, NoPivot())
 
-    @time l\b
+    @btime L\b
+    nothing # hide
 ```
 
 ```@example 1
@@ -475,8 +484,23 @@ function forward_elimination(L,b)
     return y
 end
 
-@time forward_elimination(L,b)
+@btime forward_elimination(L,b)
 ```
+
+``julia
+function compact_forward_elimination(L,b)
+    n = size(L,1)
+    for i in 1:n
+        b[i] -= sum(L[i,j]*b[j] for j=1:i-1; init=0)
+    end
+    return b
+end
+
+@btime comp
+```
+
+
+
 
 
 
