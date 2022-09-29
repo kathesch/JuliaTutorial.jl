@@ -380,7 +380,7 @@ Let's start from this [wikipedia](https://en.wikipedia.org/wiki/Gaussian_elimina
 <img src="2022-09-29-06-22-00.png" width=400/>
 ```
 
-Without doing any kind of pivots in our augmented matrix (exchange of rows), our takeaway from this should be that solving a matrix looks a bit like manipulating it into a upper triangular form (forward elimination) followed by manipulating it into simultaneously lower triangular form (backward elimination) which yields an identity matrix and a solution.
+Without doing any kind of pivots in our augmented matrix (exchange of rows), our takeaway from this should be that solving a linear system looks a bit like manipulating it into a upper triangular form (forward elimination) followed by manipulating it into simultaneously lower triangular form (backward elimination) which yields an identity matrix and a solution.
 
 
 More explicitly, starting from the first column of that (augmented) matrix $A_{aug}$, we apply exactly the row operations (adding and multiplying multiples of one row of a matrix to another) such that we zero out the elements below the diagonal. Do this for every column of the matrix. Then we do the same thing except in reverse starting from the last column of the matrix and above the diagonal to get our identity matrix. 
@@ -412,13 +412,45 @@ u_{11} & u_{12} & u_{13} \\
 
 There is one small issue with this scheme in that if $a_{11}$ is 0 or just very small, then $u_{11}$ must also be 0, and $LU$ no longer has the same rank as $A$ (which is defined to be a nice invertible square matrix). This presents a contradiction which is easily resolved by multiplying a permutation matrix $P$ to $A$ to get an $a_{11}$ with a nicer value. Multiplication of a permutation matrix from the left can be thought of as simple exchanging the rows of $A$, so this method is sometimes called LU with partial pivoting (only rows) or the LUP decomposition. 
 
-# Implementing the algorithm in Julia
+# Implementing in Julia
 
 Our numerical scheme will have three parts. 
 
-1. Compute L and U (LU decomposition)
+1. Compute L and U given A (LU decomposition)
 2. Solve Ly = b for y. (Forward elimination)
 3. Solve Ux = y for x.  (Backward elimination)
+
+If we have $LU=A$, then solving $Ax=b$ is just solving $$LUx=b$$.
+First solve for $Ux$ with $Ux = L^{-1}b$, then $x$ with $x=U^{-1}L^{-1}b$.
+
+Let's implement forward/backward elimination in Julia first.
+
+```math
+\begin{equation}
+\begin{bmatrix}
+1  & & &\\
+l_{21} & 1 & &\\
+\vdots & & \ddots\\ 
+l_{n1} & l_{n2} & \dots& 1 \\
+\end{bmatrix} 
+\begin{bmatrix}
+y_{1} \\
+y_{2}\\
+\vdots\\
+y_{n} \\
+\end{bmatrix} 
+=
+\begin{bmatrix}
+b_{1} \\
+b_{2}\\
+\vdots \\
+b_{n} \\
+\end{bmatrix} 
+
+\end{equation}
+```
+
+From here we can see $y_i$ is just $b_i$ minus previous  $y_i = b_i -\sum\limits_{i=1}^{\infty}$
 
 
 
