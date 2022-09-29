@@ -1,6 +1,6 @@
 using Documenter
 using JuliaTutorial
-using Plots, BenchmarkTools, LinreaAlgebra
+using Plots, BenchmarkTools, LinearAlgebra
 
 makedocs(
     sitename = "JuliaTutorial",
