@@ -16,7 +16,7 @@ I think Julia is perhaps the most productive gateway to the world of numerical m
 
     Practically speaking, the two language problem means scientists must use C++/fortran (with all their many headaches) to get high performance software or else hope that someone else wrote something relevant in C++/fortran and made a convenient python interface for it such as numpy or scipy.
 
-    Julia has arguably solved this problem through JIT (just-in-time) compilation along with host of other design decisions which enable a python-like syntax, but with the capability of C++/fortran speeds. This means we can make, for instance, a linear algebra package in pure Julia and have it run as fast (or sometimes faster[]) than C++/fortran ones such as openBLAS.
+    Julia has arguably solved this problem through JIT (just-in-time) compilation along with host of other design decisions which enable a python-like syntax, but with the capability of C++/fortran speeds. This means we can make, for instance, a linear algebra package in pure Julia and have it run as fast (or sometimes [faster](https://github.com/JuliaLinearAlgebra/RecursiveFactorization.jl)) than C++/fortran ones such as openBLAS.
 
     This does come at the cost - mostly in added precompilation time when a function is first called. But I believe it is well worth it for most use cases in scientific computing. 
 
@@ -201,7 +201,7 @@ Let's make a sine wave which translates itself to the right.
 end
 ```
 
-There is a lot of syntax to unpack here, but I think it introduces a lot of unique and important features of the Julia language.
+There is a lot of syntax to unpack here, but I think it introduces a lot of important language features of Julia.
 
  1. `@gif` is a "macro"
  2. `for t in 0:0.5:6...end` is a "for loop"
@@ -213,7 +213,7 @@ Macros can be thought of as a generalization of the idea of a function.
 
 A function takes arguments which are various data types for instance `sin` takes in types of `Number` such as `Int64`, `Float64`, etc and gives you a value you would associate with `sin` from its mathematical definition.
 
-But instead of taking normal data types like `Int64`, *a macro takes a piece of Julia code as an argument*. This is an example of what is known as ["metaprogramming"](https://en.wikipedia.org/wiki/Metaprogramming#:~:text=Metaprogramming%20is%20a%20programming%20technique,even%20modify%20itself%20while%20running.) is a programming technique,even modify itself while running.). In this case, `@gif` uses our for loop with a `plot` call inside as a recipe to make an animation. 
+But instead of taking normal data types like `Int64`, a macro takes *a piece of Julia code* as an argument. This is an example of what is known as ["metaprogramming"](https://en.wikipedia.org/wiki/Metaprogramming). In this case, `@gif` uses our for loop with a `plot` call inside as a recipe to make an animation. 
 
 You will likely rarely write these, but you will encounter and use them everywhere in the Julia ecosystem. 
 
@@ -233,7 +233,7 @@ nothing # hide
     1.167 ns (0 allocations: 0 bytes)
     ```
 
-    BenchmarkTools.jl also allows you to profile code with `@benchmark`.  Here `@benchmark` runs code repeatedly and collects statistics on its performance. We can chain macros together, so lets add `@time` to check how long it to took get these statistics. 
+    BenchmarkTools.jl also allows you to profile code with `@benchmark`.  Here `@benchmark` runs code repeatedly and collects statistics on its performance. We can chain macros together, so lets add `@time` to check how long it to took get these statistics (you can see the `@time` result at the top).
 
     ```julia
     >julia @time @benchmark plot(sin)
@@ -300,7 +300,7 @@ nothing # hide
 
 ## Anonymous functions
 
-In many cases, we will want to define small functions that are essentially only used once in a program. Rather than clutter everything up with their definitions, we can use anonymous functions.
+In many cases, we will want to define small functions that are essentially only used once in a program. Rather than clutter everything up with their definitions, we can use anonymous functions also sometimes called "lambdas".
 
 These are written like `x->sin(x)` or `(x,t)->sin(x-t)` for multiple arguments.  Compare with python `lambda x: sin(x)`.
 
@@ -354,7 +354,7 @@ Here is also a lineup of some notable packages that physical chemistry people mi
 * [Makie.jl](https://docs.makie.org/dev/): An extremely flexible `GPU powered plotting` package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
 * [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl): Specialized for making really clean, composable statistical plots. 
 
-**Computer Algebra System**
+**Computer Algebra Systems**
 * [MathLink.jl](https://github.com/JuliaInterop/MathLink.jl): Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. 
 * [Symbolics.jl](https://symbolics.juliasymbolics.org/dev/): The pure Julia equivalent of Mathematica. It is not as user friendly or flexible as Mathematica particuarly with symbolic integration, but it is *much* faster and support auto-differentiation. 
 * [MetaTheory.jl](https://github.com/JuliaSymbolics/Metatheory.jl): The backend for Symbolics.jl. You can define generic relationships between data structure in an abstract algebra-y way such as introducing an identity operation or a distributive property. It can then use Julia's metaprogramming interface and a concept known as [E-graph](https://en.wikipedia.org/wiki/E-graph) saturation to simplify expressions of these structures. 
@@ -366,15 +366,20 @@ Here is also a lineup of some notable packages that physical chemistry people mi
 * [OpenQuantumTools.jl](https://uscqserver.github.io/OpenQuantumTools.jl/dev/): Contains performant solvers, mostly using DifferentialEquations.jl for working with open quantum systems. 
 
 
-
-
-
 # Making a linear solver with LU decomposition
 
-Let's write our first numerical algorithm! There are many candidates for 
+Let's write our first numerical algorithm!
+
+There are many candidates for a "hello world" numerical algorithm, for instance [forward/backward euler methods](https://en.wikipedia.org/wiki/Euler_method), but I think LU decomposition is perhaps the most fundamental and instructive. 
+
+LU decomposition, despite its modern name, has a long history. It can be thought of as simply gaussian elimination (only popularized by Gauss - Newton invented it in the West). This technique was first documented by Chinese mathematicians in AD 179 who used a unique form of computational tool known as [rod calculus](https://en.wikipedia.org/wiki/Rod_calculus) to execute the algorithm. 
+
+This was one of the earliest formal uses of something like a computer algorithm as well as solving a linear system of equations, an ubiquitous task in scientific computing. In base Julia (and matlab and other languages), solving a linear system is so common, that it has its own infix operators called the left division operator `\` which solves the matrix equation Ax=b for x by A\b=x. 
 
 
-Anonymous functions in Julia use the folloing syntax `x->sin(x)`. Compare with python `lambda x: sin(x).
+
+
+
 
 
 
