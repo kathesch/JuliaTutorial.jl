@@ -382,9 +382,7 @@ Without doing any kind of pivots in our augmented matrix (exchange of rows), our
 
 More explicitly, starting from the first column of that (augmented) matrix $A_{aug}$, we apply exactly the row operations (adding and multiplying one row of a matrix to another) such that we zero out the elements below the diagonal. Do this for every column of the matrix. Then we do the same thing except in reverse starting from the last column of the matrix and above the diagonal to get our identity matrix. 
 
-Another way of think about those "row operations that zero out elements" is as a matrix itself.
-
-We can think of the first step as applying some matrix $L^{-1}$ to $A$ to form an upper triangular matrix $U$. It turns out that the inverse of a lower triangular matrix, is also lower triangular, so $L$ and $L^-{1}$ are both lower triangular matrices, but let's work with $L$ on the right side of the equation.
+We can think of the first step as multiplying some matrix $L^{-1}$ to $A$ to form an upper triangular matrix $U$. $$L^{-1}A=U$$ By inverting this matrix and enforcing a uniqueness condition on $L$ such that we have as many free variables $LU$ as in $A$ (L must be lower triangular and have diagonal entries equal to 1), we recover the LU decomposition. For example:
 
 ```math
 \begin{equation}
@@ -396,9 +394,9 @@ a_{31} & a_{32} & a_{33} \\
 \end{bmatrix} 
 =
 \begin{bmatrix}
-    l_{11} & 0 & 0 \\
-    l_{21} & l_{22} & 0 \\
-    l_{31} & l_{32} & {l_{33}} \\
+    1 & 0 & 0 \\
+    l_{21} & 1 & 0 \\
+    l_{31} & l_{32} & {1} \\
 \end{bmatrix}
 \begin{bmatrix}
 u_{11} & u_{12} & u_{13} \\
@@ -408,7 +406,6 @@ u_{11} & u_{12} & u_{13} \\
 \end{equation}
 ```
 
-This almost the LU factorization $A=LU$. It has one problem in that it isn't unique. 
 
 
 
