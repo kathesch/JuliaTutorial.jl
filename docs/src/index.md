@@ -478,7 +478,7 @@ function forward_elimination!(L,b)
     n = size(L,1)
     y = zeros(n)
     for i in 1:n
-        y[i] = b[i] - sum(L[i,j]*y[j] for j=1:i-1 if i-1 != 0; init=0)
+        y[i] = b[i] - sum(L[i,j]*y[j] for j=1:i-1; init=0)
     end
     return y
 end
@@ -487,7 +487,7 @@ forward_elimination!(L,b)
 ```
 
 ```@example 1
-b = [1,2,3,4,5] # hide
+b = [1,2,3,4,5] # hide 
 function forward_elimination_compact!(L,b)
     n = size(L,1)
     for i in 1:n
