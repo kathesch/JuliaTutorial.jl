@@ -396,32 +396,3 @@ This was one of the earliest formal uses of something like a computer algorithm 
 
 
 
-
-
-
-
-
-
-
--Introduce this project
--Motivate the use of julia
-    -speed
-    -community
-    -expressivness
--Ecosystem
-    -DiffEq.jl
-    -Plotting packages
--Resources
-    -Cheatsheet for python
-    -Julia for talented amateurs
--Getting started
-    -Package manager
-    -Installation
-    -Main syntax
--Plotting
--LU system
--Homotopy continuation
-
-
-
-
