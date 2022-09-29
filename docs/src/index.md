@@ -450,7 +450,35 @@ b_{n} \\
 \end{equation}
 ```
 
-From here we can see $y_i$ is just $b_i$ minus previous  $y_i = b_i -\sum\limits_{i=1}^{\infty}$
+From here we can see $y_i$ is just $b_i$ minus all the previous values of $y_{i-1}$ to $y_{1}$ multiplied by $l_{i,i-1}$ to $l_{i,1}$. You can think of the range $l_{i,i-1}$:$l_{i,1}$ as being just the the values to left of the 1 on the row corresponding to $y_{i}$.
+
+$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$
+
+```math
+\begin{equation}
+\begin{bmatrix}
+u_{11}  & u_{12} & \dots &u_{1n}\\
+ & u_{22} & \dots & u_{2n}\\
+ & & \ddots & \vdots\\ 
+ &  & & u_{nn} \\
+\end{bmatrix} 
+\begin{bmatrix}
+x_{1} \\
+x_{2}\\
+\vdots\\
+x_{n} \\
+\end{bmatrix} 
+=
+\begin{bmatrix}
+y_{1} \\
+y_{2}\\
+\vdots \\
+y_{n} \\
+\end{bmatrix} 
+
+\end{equation}
+```
+
 
 
 
