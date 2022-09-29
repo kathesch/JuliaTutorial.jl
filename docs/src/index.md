@@ -470,7 +470,7 @@ $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
     b = rand(5)
     L,U = lu(A, NoPivot())
 
-    @btime L\b
+    @time L\b
     nothing # hide
 ```
 
@@ -484,11 +484,11 @@ function forward_elimination(L,b)
     return y
 end
 
-@btime forward_elimination(L,b)
+forward_elimination(L,b)
 ```
 
-``julia
-function compact_forward_elimination(L,b)
+```julia
+function forward_elimination_compact(L,b)
     n = size(L,1)
     for i in 1:n
         b[i] -= sum(L[i,j]*b[j] for j=1:i-1; init=0)
@@ -496,8 +496,10 @@ function compact_forward_elimination(L,b)
     return b
 end
 
-@btime comp
+forward_elimination_compact(L,b)
 ```
+
+
 
 
 
