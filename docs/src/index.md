@@ -458,7 +458,7 @@ b_{n} \\
 \end{equation}
 ```
 
-Exapand out the matrix multiplication:
+Expand out the matrix multiplication:
 
 $$l_{i1}y_{1}+\dots+l_{i,i-1}y_{i-1} + y_{i}=b_{i}$$
 
@@ -519,8 +519,6 @@ nothing # hide
 nothing # hide
 ```
 
-
-
 ```math
 \begin{equation}
 \begin{bmatrix}
@@ -554,13 +552,12 @@ Solve for $x_{i}$
 
 $$x_i = \frac{1}{u_{ii}}\left(y_i -\sum\limits_{j=1+i}^{n}u_{ij}x_{j}\right)$$
 
-The only notable difference from the previous case: 
+In the expression above, the only notable difference from the previous case we can see are: 
 
 * Because we don't have 1s all along the diagonal, solving for x_{i} gives us a divisor $u_{ii}$
 * Limits of the summation are now different because we must sum values along each row *to the right* instead of from the left. 
-Let's define a function that is as close to this expression as possible. 
 
-A naive modification of the forward elimination case might look like this. 
+A naive modification of the forward elimination case might look like this (making the changes above and substituting a few variables to make our notation consistent).
 
 ```@example 1
 function backward_elimination!(U,y)
@@ -573,7 +570,7 @@ function backward_elimination!(U,y)
 end
 ```
 
-We will need to test it to make sure we weren't forgetting anything.
+We will need to test it to make sure we aren't forgetting anything.
 
 ```@example 1
 A = rand(5,5)
@@ -587,14 +584,12 @@ U\y
 backward_elimination!(U,y)
 ```
 
-
-
-
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
-function backward_elimination(U,y)
+function backward_elimination!(U,y)
     n = size(U,1)
     x = zeros(n)
+    #reversed order (alternatively written n:-1:1)
     for i in reverse(1:n)
         x[i] = (1/U[i,i]) * (y[i] - sum(U[i,j]*x[j] for j=1+i:n; init=0))
     end
@@ -603,11 +598,23 @@ end
 nothing #hide
 ```
 
+```@example 1
+y = [1.2, -2.3, 5.6,4.5,0.01] # hide
+backward_elimination!(U,y)
+```
+
+
+# Homotopy continuation
+
+I wanted to also give a little bit of a peek into 
+
+
+
 In general, the ideal way of approaching a implementing numerical method is:
 
 1. Write a well defined mathematical expression for the system of interest.
 2. Come up with a clean way to execute it on a computer. As close to math syntax as possible. 
-3. Write a test that can give some measure of how close the function in 2. reflects the expression in 1.
+3. Write a test that can give some measure of how close the function in 2. reflects the expression in 1. Computational implementations can have additional complexities that are not always evident in a mathematical expression. 
 4. Optimize and tinker the heck out of 2. This doesn't have to just just mean speed. Also think about making it robust to errors and provide a flexible/generic interface. Compare with earlier tests for accuracy and speed.
 
 There are many cases where one, some, or all of these are hard to do. Science is messy, but 
