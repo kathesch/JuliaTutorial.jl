@@ -423,7 +423,7 @@ u_{11} & u_{12} & u_{13} \\
 
 There is one small issue with this scheme in that if $a_{11}$ is 0 or just very small, then $u_{11}$ must also be 0, and $LU$ no longer has the same rank as $A$ (which is defined to be a nice invertible square matrix). This presents a contradiction which is easily resolved by multiplying a permutation matrix $P$ to $A$ to get an $a_{11}$ with a nicer value. Multiplication of a permutation matrix from the left can be thought of as simple exchanging the rows of $A$, so this method is sometimes called LU with partial pivoting (only rows) or the LUP decomposition. 
 
-# Implementing in Julia
+# Forward elimination
 
 Our numerical scheme will have three parts. 
 
@@ -561,6 +561,8 @@ nothing # hide
 
 ## Backward elimination
 
+Here we have the backwards elimination equation. 
+
 ```math
 \begin{equation}
 \begin{bmatrix}
@@ -666,30 +668,22 @@ end
 nothing # hide
 ```
 
+Our error is just machine precision.
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
-backward_elimination!(U,y)
+U\y - backward_elimination!(U,y)
 ```
 
-Finally, we can make the LU decomposition. This can be viewed as solving for the zeros the polynomial equation $LU-A=0$ with arbitrary constants $a_{ij}$. 
+# LU decomposition
 
-```math
-\begin{equation}
-\left[
-\begin{array}{ccc}
- u_{11}-a_{11} & u_{12}-a_{12} & u_{13}-a_{13} \\
- l_{21} u_{11}-a_{21} & -a_{22}+l_{21} u_{12}+u_{22} & -a_{23}+l_{21} u_{13}+u_{23} \\
- l_{31} u_{11}-a_{31} & -a_{32}+l_{31} u_{12}+l_{32} u_{22} & -a_{33}+l_{31} u_{13}+l_{32} u_{23}+u_{33} \\
-\end{array}
-\right]=0
-\end{equation}
-```
+We can finally make the LU decomposition. This can be viewed as solving for the zeros the polynomial equation $LU-A=0$ with arbitrary constants $a_{ij}$. 
 
 It is a little funny that one of the simplest ways of solving a general linear system is actually to first a polynomial system. Polynomial/nonlinear systems hiding behind "simple" algorithms is a very common theme in applied math and computer science.
 
 One possible explanation for the flexibility and ubiquitousness of linear system solvers at the heart of so many problems, for instance, linear regression, newton's method, physics inverse problems, etc is the solvers for them already come prepackaged with sophisticated math. 
 
-Okay, but how do we actually solve that monster? 
+Okay, but how do we actually solve that monster? It isn't too different from our treatment of `forward elimination` and `backward elimination`. Except instead of using 1 element that we know (either the first or last) and "growing" the solution, we use the entire first row. 
+
 ```math
 \begin{equation}
 \left(
@@ -705,13 +699,13 @@ Okay, but how do we actually solve that monster?
 
 There are three parts to this system of equations.
 
-1. The first row is super nice. We know all values $a_{ij}$ and $a_{1j} = u_{1j}$. So we now know all values $u_{1,j}$. 
+1. The first row is very nice. We know all values $a_{ij}$ and $a_{1j} = u_{1j}$. So we now know all values $u_{1,j}$. 
 2. The next easiest area is the first column. It has only one variable we don't know yet which is $l_{i1}$. Solving for it we get $l_{i1} = \frac{a_{i1}}{u_{11}}$
 3. Finally, since we have the first column and the first row, we can see the only unknown in the second column is $l_{i2}$. 
 
 This suggests it is possible to build out the matrix column-by-column from the left.
 
-Let's write a program for this. Notice that, since the only overlap of the L and U matrices is on the diagonal and we know the diagonal values of L are 1, so we lose nothing by storing all our values in the original matrix.
+Let's write a program for this. Notice that since the only overlap of the L and U matrices is on the diagonal, and we know the diagonal values of $L$ are 1 - we lose nothing by storing all our values in the original matrix.
 
 ```@example 1
 function lu_decomposition!(A)
@@ -730,7 +724,7 @@ end
 nothing # hide
 ```
 
-Testing this to see that it generates the correct behaviors
+Testing this to see that it generates the correct behaviors.
 
 ```@example 1
 A = rand(5,5)
@@ -740,8 +734,9 @@ l,u = lu(A, NoPivot())
 ```@example 1
 lu_decomposition!(A)
 ```
+# Putting it all together as a linear Solver
 
-We finally have all the pieces of the puzzle for a linear solver! 
+We have all the pieces of the puzzle for a linear solver! Since all of our functions are mutating, we just have to list them in the three steps outlined at the beginning. 
 
 ```@example 1
 function linear_solve!(A,b)
@@ -758,13 +753,9 @@ nothing # hide
 A = rand(5,5)
 b = rand(5)
 
-A\b
+# Error is just machine precision
+A\b - linear_solve!(A,b)
 ```
-
-```@example 1
-linear_solve!(A,b)
-```
-
 
 ```@example 1
 using BenchmarkTools
@@ -777,6 +768,8 @@ nothing # hide
 @btime linear_solve!(A,b)
 nothing # hide
 ```
+
+Our solver is ~3x faster than Base Julia's! This is mostly because we don't have to check for the best algorithm and `\` must allocate some memory. Still really great though!  
 
 
 
