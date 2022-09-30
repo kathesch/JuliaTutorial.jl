@@ -729,7 +729,7 @@ end
 Testing this to see that it generates the correct behaviors
 
 ```@example
-A = reshape(collect(1:16),4,4)
+A = reshape(collect(1:16.),4,4)
 ```
 
 ```@example 1
