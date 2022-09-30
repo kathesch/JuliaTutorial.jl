@@ -468,20 +468,41 @@ $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
 
 From here we can see $y_i$ is just $b_i$ minus all the previous values of $y_{i-1}$ to $y_{1}$ multiplied by $l_{i,i-1}$ to $l_{i,1}$. You can think of the range $l_{i,i-1}$:$l_{i,1}$ as being just the the values to left of the 1 on the row corresponding to $y_{i}$.
 
+We can adapt this expression into Julia using a for loop. 
+
+```@example 1
+function forward_elimination(L,b)
+    n = size(L,1)
+    y = zeros(n)
+    for i in 1:n
+        y[i] = b[i] - sum(L[i,j] * y[j] for j=1:i-1; init=0)
+    end
+    return y
+end
+```
+Breaking the following function down a little:
+
+* `n = size(L,1)` gives us the number of rows along in $L$.
+* `y = zeros(n)` initializes an array of zeros. 
+* `y[i] = ...` assigns values to this array
+* `sum(L[i,j] * y[j] for j=1:i-1; init=0)` uses "generator comprehension" syntax (see [for loops](https://kathesch.github.io/JuliaTutorial.jl/dev/#For-loops)) to model the summation. `init=0` is a keyword argument that tells the sum function to return `0` when its argument is empty which is the case when `i = 1` and `i-1=0`.
+* `return y` outputs our filled array `y`.
+
+Let's test the accuracy of this expression by comparing with Julia's `lu` from `LinearAlgebra.jl` and `\`.
 
 
 ```@example 1
 using LinearAlgebra
 
 A = rand(5,5)
-b = [1.2, -2.3, 5.6, 4.5, 0.01]
-L,U = lu(A, NoPivot()) # With pivoting turned off
+b = [1.2, -2.3, 5.6, 800, 0.01] # test array ideally covers a variety of numbers
+L,U = lu(A, NoPivot()) # with pivoting turned off to make it like our algorithm
 
 L\b
 ```
 
 ```@example 1
-function forward_elimination!(L,b)
+function forward_elimination(L,b)
     n = size(L,1)
     y = zeros(n)
     for i in 1:n
@@ -490,20 +511,31 @@ function forward_elimination!(L,b)
     return y
 end
 
-forward_elimination!(L,b)
+forward_elimination(L,b)
 ```
+
+We can see these are in agreement. 
+
+When making a numerical algorithm, we go from a mathematical expression to a piece of code. Ideally, that piece of code is initially made quite close to the mathematical expression to make it easy to tweak and debug.
+
+However, there are almost always modifications we want to make to that code to make it much faster or have other desireable design features (such as having a similar interface as other functions in our code base or work with multiple different cases.).
+
+Let's touch up `forward elimination` to make it faster. The biggest change we can make is to remove the unnecessary `y` array. Our `b` array contains all the information we need, and we can just modify 
+
 ```@example 1
 b = [1.2, -2.3, 5.6,4.5,0.01] # hide
-function forward_elimination_compact!(L,b)
+function forward_elimination!(L,b)
     n = size(L,1)
     for i in 1:n
-        b[i] -= sum(L[i,j] * b[j] for j=1:i-1; init=0)
+        b[i] = b[i] - sum(L[i,j] * b[j] for j=1:i-1; init=0)
     end
     return b
 end
 
-forward_elimination_compact!(L,b)
+forward_elimination!(L,b)
 ```
+
+
 
 ```@example 1
 using BenchmarkTools
@@ -511,11 +543,11 @@ using BenchmarkTools
 nothing # hide
 ```
 ```@example 1
-@btime forward_elimination!(L,b)
+@btime forward_elimination(L,b)
 nothing # hide
 ```
 ```@example 1
-@btime forward_elimination_compact!(L,b)
+@btime forward_elimination!(L,b)
 nothing # hide
 ```
 
@@ -560,7 +592,7 @@ In the expression above, the only notable difference from the previous case we c
 A naive modification of the forward elimination case might look like this (making the changes above and substituting a few variables to make our notation consistent).
 
 ```@example 1
-function backward_elimination!(U,y)
+function backward_elimination(U,y)
     n = size(U,1)
     x = zeros(n)
     for i in 1:n
@@ -581,17 +613,22 @@ U\y
 ```
 
 ```@example 1
-backward_elimination!(U,y)
+backward_elimination(U,y)
 ```
 
-Comparing these two results from bottom to top, we see that our `backwards elimination` 
+Comparing these two results from bottom to top, we see that our `backwards_elimination` starts off well, but then messes up. 
+
+This is a critical lesson to learn with computational algorithms - mathematical expressions do not always contain all the information we need to translate it to a computer. 
+
+In this case, in our for loop, we were starting from `1` instead of the `n`. Our algorithm was dutifully using our `x` array filled with 0s to compute the long sum for $x_{1}$ instead of starting from the known case of $x_{n}$ and building up to $x_{1}$.
+
+We can fix this problem, by calling `reverse` on our range for `i`. We could also use `n:-1:1` to do it more like python, but `reverse` is probably a little easier to read. 
 
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
 function backward_elimination!(U,y)
     n = size(U,1)
     x = zeros(n)
-    #reversed order (alternatively written n:-1:1)
     for i in reverse(1:n)
         x[i] = (1/U[i,i]) * (y[i] - sum(U[i,j]*x[j] for j=1+i:n; init=0))
     end
@@ -605,10 +642,10 @@ y = [1.2, -2.3, 5.6,4.5,0.01] # hide
 backward_elimination!(U,y)
 ```
 
-And let's make similar changes as `forward_elimination_compact` to yield `backward_elimination_compact`. This just means remplacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions `b` instead of `x`,`y`,`b`.
+And let's make similar changes as `forward_elimination!` to yield `backward_elimination!`. This just means replacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions `b` instead of `x`,`y`,`b`.
 
 ```@example
-function backward_elimination_compact!(U,b)
+function backward_elimination!(U,b)
     n = size(U,1)
     for i in reverse(1:n)
         b[i] = (1/U[i,i]) * (b[i] - sum(U[i,j]*b[j] for j=1+i:n; init=0))
@@ -619,8 +656,13 @@ end
 
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
-backward_elimination_compact!(U,y)
+backward_elimination!(U,y)
 ```
+
+Finally, we can make the LU decomposition.
+
+
+
 # Homotopy continuation
 
 I wanted to also give a little bit of a peek into 
