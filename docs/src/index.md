@@ -520,7 +520,9 @@ When making a numerical algorithm, we go from a mathematical expression to a pie
 
 However, there are almost always modifications we want to make to that code to make it much faster or have other desireable design features (such as having a similar interface as other functions in our code base or work with multiple different cases.).
 
-Let's touch up `forward elimination` to make it faster. The biggest change we can make is to remove the unnecessary `y` array. Our `b` array contains all the information we need, and we can just modify 
+Let's touch up `forward elimination` to make it faster. The biggest change we can make is to remove the unnecessary `y` array. `b[i]` at the current and future iterations is the only information we need. Earlier indices of `b` are essentially just free real estate that we can assign output to. This will make the function a "mutating" one i.e. it modifies an array outside of the function scope (not initialized inside the function). 
+
+Mutation is the source of many computer bugs and headaches in software, but it is well worth it for performance. To make it easier to identify bugs from mutation, the Julia convention is to write a `!` after the function. We therefore have `forward_elimination!`. 
 
 ```@example 1
 b = [1.2, -2.3, 5.6,4.5,0.01] # hide
@@ -535,6 +537,9 @@ end
 forward_elimination!(L,b)
 ```
 
+Which gives us the expected correct results.
+
+We need to benchmark our results to see if this was actually worth it. And as you can see below, we are getting an almost 3x improvement over Julia's `\` with`forward_elimination`. `forward_elimination!` gives us a 2x improvement on top of that (total 6x)!. 
 
 
 ```@example 1
@@ -550,6 +555,8 @@ nothing # hide
 @btime forward_elimination!(L,b)
 nothing # hide
 ```
+
+## Backward elimination
 
 ```math
 \begin{equation}
@@ -586,7 +593,7 @@ $$x_i = \frac{1}{u_{ii}}\left(y_i -\sum\limits_{j=1+i}^{n}u_{ij}x_{j}\right)$$
 
 In the expression above, the only notable difference from the previous case we can see are: 
 
-* Because we don't have 1s all along the diagonal, solving for x_{i} gives us a divisor $u_{ii}$
+* Because we don't have 1s all along the diagonal, solving for $x_{i}$ gives us a divisor $u_{ii}$
 * Limits of the summation are now different because we must sum values along each row *to the right* instead of from the left. 
 
 A naive modification of the forward elimination case might look like this (making the changes above and substituting a few variables to make our notation consistent).
@@ -616,11 +623,11 @@ U\y
 backward_elimination(U,y)
 ```
 
-Comparing these two results from bottom to top, we see that our `backwards_elimination` starts off well, but then messes up. 
+Comparing these two results from bottom to top, we see that our `backwards_elimination` starts off well, but then gets very confused. 
 
 This is a critical lesson to learn with computational algorithms - mathematical expressions do not always contain all the information we need to translate it to a computer. 
 
-In this case, in our for loop, we were starting from `1` instead of the `n`. Our algorithm was dutifully using our `x` array filled with 0s to compute the long sum for $x_{1}$ instead of starting from the known case of $x_{n}$ and building up to $x_{1}$.
+In this case, in our for loop, we were starting from `1` instead of the `n`. Our algorithm was dutifully using our `x` array filled with 0s to compute the long sum for $x_{1}$ instead of starting from the single known case of $x_{n}$ and building up to $x_{1}$.
 
 We can fix this problem, by calling `reverse` on our range for `i`. We could also use `n:-1:1` to do it more like python, but `reverse` is probably a little easier to read. 
 
@@ -642,7 +649,7 @@ y = [1.2, -2.3, 5.6,4.5,0.01] # hide
 backward_elimination!(U,y)
 ```
 
-And let's make similar changes as `forward_elimination!` to yield `backward_elimination!`. This just means replacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions `b` instead of `x`,`y`,`b`.
+And let's make similar changes as `forward_elimination!` to yield `backward_elimination!`. This just means replacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions with just `b` instead of `x`,`y`,`b`.
 
 ```@example
 function backward_elimination!(U,b)
@@ -659,24 +666,83 @@ y = [1.2, -2.3, 5.6,4.5,0.01] # hide
 backward_elimination!(U,y)
 ```
 
-Finally, we can make the LU decomposition.
+Finally, we can make the LU decomposition. This can be viewed as solving for the zeros the polynomial equation $LU-A=0$ with arbitrary constants $a_{ij}$. 
+
+```math
+\begin{equation}
+\left[
+\begin{array}{ccc}
+ u_{11}-a_{11} & u_{12}-a_{12} & u_{13}-a_{13} \\
+ l_{21} u_{11}-a_{21} & -a_{22}+l_{21} u_{12}+u_{22} & -a_{23}+l_{21} u_{13}+u_{23} \\
+ l_{31} u_{11}-a_{31} & -a_{32}+l_{31} u_{12}+l_{32} u_{22} & -a_{33}+l_{31} u_{13}+l_{32} u_{23}+u_{33} \\
+\end{array}
+\right]=0
+\end{equation}
+```
+
+It is a bit funny that one of the simplest ways of solving a general linear system is actually to first a polynomial system. Polynomial/nonlinear systems hiding behind "simple" algorithms is a very common theme in applied math and computer science.
+
+This is a little annoying for us implementing a solver, but it isn't without its rewards. One possible explanation for the flexibility and ubiquitousness of linear system solvers at the heart of so many problems, for instance, linear regression, newton's method, physics inverse problems, etc is the solvers for them already come prepackaged with sophisticated math. 
+
+Okay, but how do we actually solve that monster? 
+```math
+\begin{equation}
+\left(
+\begin{array}{cccc}
+ u_{11}-a_{11} & u_{12}-a_{12} & \dots & u_{1m}-a_{1m} \\
+ l_{21} u_{11}-a_{21} & l_{21} u_{12}+u_{22}-a_{22} &  & l_{21} u_{1m}+u_{2m}-a_{2m} \\
+ \vdots &  & \ddots & \vdots \\
+ l_{n1} u_{11}-a_{n1} & l_{n1} u_{12}+l_{n2} u_{22}-a_{n2} & \dots & l_{n1} u_{1m}+l_{n2} u_{2m}+\dots+l_{n,m-1}u_{n-1,m} + u_{nm}-a_{nm} \\
+\end{array}
+\right)
+\end{equation}
+```
+
+There are really three parts to this system of equations.
+
+1. The first row is super nice. We know all values $a_{ij}$ and $a_{1j} = u_{1j}$. So we now know all values $u_{1,j}$. 
+2. The next easiest area is the first column. It has only one variable we don't know yet which is $l_{i1}$. Solving for it we get $l_{i1} = \frac{a_{i1}}{u_{11}}$
+3. Finally, since we have the first column and the first row, we can see the only unknown in the second column is $l_{i2}$. 
+
+This suggests it is possible to build out the matrix column-by-column from the left.
+
+Let's write a program for this. Notice that, since the only overlap of the L and U matrices is on the diagonal and we know the diagonal values of L are 1, so we lose nothing by storing all our values in the original matrix.
+
+```@example 1
+function LU_decomposition!(A)
+    n = Size(A,1)
+    for j in 1:n #loop every column
+        for i in j+1:n #every row below the jth
+            A[i,j] = A[i,j]/A[j,j]
+            for k in j+1:n #adding ij/jk terms to the rest of the row to the right of A[i,j]
+                A[i,k] = A[i,k] - A[i,j]*A[j,k]
+            end
+        end
+    end
+return A
+end
+```
+
+Testing this to see that it generates the correct behaviors
+
+```@example
+A = reshape(collect(1:16),4,4)
+```
+
+```@example 1
+l,u = lu(A)
+```
+
+```@example
+LU_decomposition!(A)
+```
 
 
 
-# Homotopy continuation
-
-I wanted to also give a little bit of a peek into 
 
 
 
-In general, the ideal way of approaching a implementing numerical method is:
 
-1. Write a well defined mathematical expression for the system of interest.
-2. Come up with a clean way to execute it on a computer. As close to math syntax as possible. 
-3. Write a test that can give some measure of how close the function in 2. reflects the expression in 1. Computational implementations can have additional complexities that are not always evident in a mathematical expression. 
-4. Optimize and tinker the heck out of 2. This doesn't have to just just mean speed. Also think about making it robust to errors and provide a flexible/generic interface. Compare with earlier tests for accuracy and speed.
-
-There are many cases where one, some, or all of these are hard to do. Science is messy, but 
 
 
 
