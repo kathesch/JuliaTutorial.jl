@@ -731,12 +731,9 @@ nothing # hide
 
 Testing this to see that it generates the correct behaviors
 
-```@example
-A = rand(5,5)
-```
-
 ```@example 1
-l,u = lu(A)
+A = rand(5,5)
+l,u = lu(A, NoPivot())
 ```
 
 ```@example 1
