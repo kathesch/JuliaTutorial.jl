@@ -655,7 +655,7 @@ backward_elimination(U,y)
 
 And let's make similar changes as `forward_elimination!` to yield `backward_elimination!`. This just means replacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions with just `b` instead of `x`,`y`,`b`.
 
-```@example
+```@example 1
 function backward_elimination!(U,b)
     n = size(U,1)
     for i in reverse(1:n)
@@ -685,9 +685,9 @@ Finally, we can make the LU decomposition. This can be viewed as solving for the
 \end{equation}
 ```
 
-It is a bit funny that one of the simplest ways of solving a general linear system is actually to first a polynomial system. Polynomial/nonlinear systems hiding behind "simple" algorithms is a very common theme in applied math and computer science.
+It is a little funny that one of the simplest ways of solving a general linear system is actually to first a polynomial system. Polynomial/nonlinear systems hiding behind "simple" algorithms is a very common theme in applied math and computer science.
 
-This is a little annoying for us implementing a solver, but it isn't without its rewards. One possible explanation for the flexibility and ubiquitousness of linear system solvers at the heart of so many problems, for instance, linear regression, newton's method, physics inverse problems, etc is the solvers for them already come prepackaged with sophisticated math. 
+One possible explanation for the flexibility and ubiquitousness of linear system solvers at the heart of so many problems, for instance, linear regression, newton's method, physics inverse problems, etc is the solvers for them already come prepackaged with sophisticated math. 
 
 Okay, but how do we actually solve that monster? 
 ```math
@@ -724,7 +724,8 @@ function lu_decomposition!(A)
             end
         end
     end
-return A
+
+    return A
 end
 nothing # hide
 ```
