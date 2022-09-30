@@ -4,7 +4,8 @@
 
 Welcome to JuliaTutorial.jl! The aim of this page is to get you quickly started with the Julia programming language.
 
-I think Julia is perhaps the most productive gateway to the world of numerical methods for scientific computing, and I hope this can be a self-contained resource to get you started with Julia, its ecosystem, and exploring numerical methods.
+Julia is perhaps the most productive gateway to the world of numerical methods for scientific computing, and I hope this can be a self-contained resource to get you started with Julia, its ecosystem, and exploring numerical methods with toy example of making a linear solver using LU decomposition. 
+
 
 !!! note "What is Julia and why should you learn it"
 
@@ -207,7 +208,7 @@ There is a lot of syntax to unpack here, but I think it introduces many importan
  2. `for t in 0:0.5:6...end` is a "for loop"
  3. `x->sin(x-t)` is an "anonymous function" or "lambda"
 
-## Macros
+### Macros
 
 Macros can be thought of as a generalization of the idea of a function.
 
@@ -249,7 +250,7 @@ nothing # hide
 
     Memory estimate: 497.41 KiB, allocs estimate: 21325.
     ```
-## For loops
+### For loops
 
 Most programming languages have constructions called "for loops" which allow execution of code repeatedly. 
 
@@ -306,7 +307,7 @@ nothing # hide
     0.1411200080598672
     ```
 
-## Anonymous functions
+### Anonymous functions
 
 In many cases, we will want to define small functions that are essentially only used once in a program. Rather than clutter everything up with their definitions, we can use anonymous functions also sometimes called "lambdas".
 

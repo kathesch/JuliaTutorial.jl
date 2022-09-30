@@ -3,9 +3,13 @@ using JuliaTutorial
 using Plots, BenchmarkTools, LinearAlgebra
 
 makedocs(
-    sitename = "JuliaTutorial",
+    sitename = "JuliaTutorial.jl",
     format = Documenter.HTML(),
-    modules = [JuliaTutorial]
+    modules = [JuliaTutorial],
+    pages = [
+        "Learning Julia" => "index.md",
+        "LU Decomposition Example" => "ludecomposition.md"
+        ]
 )
 
 # Documenter can also automatically deploy documentation to gh-pages.
