@@ -610,6 +610,7 @@ function backward_elimination(U,y)
     end
     return x
 end
+nothing # hide
 ```
 
 We will need to test it to make sure we aren't forgetting anything.
@@ -636,7 +637,7 @@ We can fix this problem, by calling `reverse` on our range for `i`. We could als
 
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
-function backward_elimination!(U,y)
+function backward_elimination(U,y)
     n = size(U,1)
     x = zeros(n)
     for i in reverse(1:n)
@@ -649,7 +650,7 @@ nothing #hide
 
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
-backward_elimination!(U,y)
+backward_elimination(U,y)
 ```
 
 And let's make similar changes as `forward_elimination!` to yield `backward_elimination!`. This just means replacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions with just `b` instead of `x`,`y`,`b`.
@@ -662,6 +663,7 @@ function backward_elimination!(U,b)
     end
     return b
 end
+nothing # hide
 ```
 
 ```@example 1
@@ -701,7 +703,7 @@ Okay, but how do we actually solve that monster?
 \end{equation}
 ```
 
-There are really three parts to this system of equations.
+There are three parts to this system of equations.
 
 1. The first row is super nice. We know all values $a_{ij}$ and $a_{1j} = u_{1j}$. So we now know all values $u_{1,j}$. 
 2. The next easiest area is the first column. It has only one variable we don't know yet which is $l_{i1}$. Solving for it we get $l_{i1} = \frac{a_{i1}}{u_{11}}$
@@ -713,7 +715,7 @@ Let's write a program for this. Notice that, since the only overlap of the L and
 
 ```@example 1
 function LU_decomposition!(A)
-    n = Size(A,1)
+    n = size(A,1)
     for j in 1:n #loop every column
         for i in j+1:n #every row below the jth
             A[i,j] = A[i,j]/A[j,j]
@@ -724,12 +726,13 @@ function LU_decomposition!(A)
     end
 return A
 end
+nothing # hide
 ```
 
 Testing this to see that it generates the correct behaviors
 
 ```@example
-A = reshape(collect(1:16.),4,4)
+A = A = rand(1:10., 5,5)
 ```
 
 ```@example 1
@@ -739,6 +742,8 @@ l,u = lu(A)
 ```@example 1
 LU_decomposition!(A)
 ```
+
+Finally for what we have all been waiting for.
 
 
 
