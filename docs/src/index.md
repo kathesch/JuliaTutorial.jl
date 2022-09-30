@@ -286,7 +286,7 @@ nothing # hide
     6
     ```
 
-    1. "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. For [infix(https://en.wikipedia.org/wiki/Infix_notation) operators] such as `+` you can put it before the operator such as `[1:3] .+ [1:3]` or `.+(1:3,1:3)`.
+    1. "Vectorized functions" provide another fast syntax for applying a function to an iterator and returning an array. Simply put a `.` after the function to make it apply to every element in an array. For [infix](https://en.wikipedia.org/wiki/Infix_notation) operators such as `+` you can put it before the operator such as `[1:3] .+ [1:3]` or `.+(1:3,1:3)`.
 
     ```julia
         sin.(1:3)
@@ -357,10 +357,13 @@ Here is also a lineup of some notable packages that physical chemistry people mi
   
 * [Zygote.jl](https://fluxml.ai/Zygote.jl/latest/): Julia's main automatic differentiation package and is what powers Flux.jl. It has a similar lightweight/explict design philosophy. The book [Numerical Methods for Scientific Computing](https://www.equalsharepress.com/media/NMFSC.pdf) has a great tutorial on how to build an automatic differentiation tool in Julia similar to Zygote.
 
+* [Pluto.jl](https://github.com/fonsp/Pluto.jl): Fills a similar role to Jupyter notebooks (actually you can use Julia in Jupyter as well). Has many advantages over Jupyter notebooks notably being just a normal `.jl` file as opposed to a special `.ipynb` and being "reactive" meaning it automatically updates everything as you write code. Probably the best alternative to VS Code. 
+  
 **Plotting**
 * [Plots.jl](https://docs.juliaplots.org/stable/): The jack-of-all-trades standard plotting package. Has many backends and a simple syntax to make quick and dirty plots.
 * [Makie.jl](https://docs.makie.org/dev/): An extremely flexible `GPU powered plotting` package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
 * [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl): Specialized for making really clean, composable statistical plots. 
+* [Pluto.jl](https://github.com/fonsp/Pluto.jl): Not technically a plotting library, but fills a similar role to Jupyter notebooks (actually you can use Julia in Jupyter as well). Has many advantages over Jupyter notebooks notalby being just a normal `.jl` file. 
 
 **Computer Algebra Systems**
 * [MathLink.jl](https://github.com/JuliaInterop/MathLink.jl): Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. 
@@ -733,7 +736,7 @@ A = reshape(collect(1:16),4,4)
 l,u = lu(A)
 ```
 
-```@example
+```@example 1
 LU_decomposition!(A)
 ```
 
