@@ -423,6 +423,14 @@ u_{11} & u_{12} & u_{13} \\
 
 There is one small issue with this scheme in that if $a_{11}$ is 0 or just very small, then $u_{11}$ must also be 0, and $LU$ no longer has the same rank as $A$ (which is defined to be a nice invertible square matrix). This presents a contradiction which is easily resolved by multiplying a permutation matrix $P$ to $A$ to get an $a_{11}$ with a nicer value. Multiplication of a permutation matrix from the left can be thought of as simple exchanging the rows of $A$, so this method is sometimes called LU with partial pivoting (only rows) or the LUP decomposition. 
 
+!!! note "Julia's default linear solver `\`"
+
+    Under the hood, `\` is what is known as a polyalgorithm. Based off of what type of matrix you give, i.e. is it square, sparse, has certain symmetries, etc it is able to dispatch a "pretty good" algorithm for the job. 
+
+    What algorithm is "pretty good" is actually very relative to your exact use, so you might need to make explicit choices about your algorithm by using packages such as [LinearSolve.jl](http://linearsolve.sciml.ai/stable/solvers/solvers/). Particularly for large systems, in extreme cases, algorithm choice can mean the difference between solving it in hours or seconds. 
+
+    This is why that although you will likely never actually use your own linear solver, it can be helpful to know what different algorithms exist and have some insight as to what they are good at. For instance, that LU decomposition is fastest for small, dense matrices, singular value decomposition and qr algorithm are expensive, but can make up for it in precision, and that iterative methods are great for large systems compared to factorization methods ([from LinearSolver.jl docs](http://linearsolve.sciml.ai/stable/solvers/solvers/))
+
 # Forward elimination
 
 Our numerical scheme will have three parts. 
@@ -559,7 +567,7 @@ nothing # hide
 nothing # hide
 ```
 
-## Backward elimination
+# Backward elimination
 
 Here we have the backwards elimination equation. 
 
@@ -797,11 +805,7 @@ x = A\b
 @time A*x - b #Should be approximately 0
 ```
 
-Under the hood, `\` is what is known as a polyalgorithm. Based off of what type of matrix you give, i.e. is it square, sparse, has certain symmetries, etc it is able to dispatch a "pretty good" algorithm for the job. 
 
-What algorithm is "pretty good" is actually very relative to your exact use, so you might need to make explicit choices about your algorithm by using packages such as [LinearSolve.jl](http://linearsolve.sciml.ai/stable/solvers/solvers/). Particularly for large systems, in extreme cases, algorithm choice can mean the difference between solving it in hours or seconds. 
-
-This is why that although you will likely never actually use your own linear solver, it can be helpful to know what different algorithms exist and have some insight as to what they are good at. For instance, that LU decomposition is fastest for small, dense matrices, singular value decomposition and qr algorithm are expensive, but can make up for it in precision, and that iterative methods are great for large systems compared to factorization methods ([from LinearSolver.jl docs](http://linearsolve.sciml.ai/stable/solvers/solvers/))
 
 
 
