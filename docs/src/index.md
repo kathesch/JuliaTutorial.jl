@@ -584,6 +584,8 @@ U\y
 backward_elimination!(U,y)
 ```
 
+Comparing these two results from bottom to top, we see that our `backwards elimination` 
+
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
 function backward_elimination!(U,y)
@@ -603,7 +605,22 @@ y = [1.2, -2.3, 5.6,4.5,0.01] # hide
 backward_elimination!(U,y)
 ```
 
+And let's make similar changes as `forward_elimination_compact` to yield `backward_elimination_compact`. This just means remplacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions `b` instead of `x`,`y`,`b`.
 
+```@example
+function backward_elimination_compact!(U,b)
+    n = size(U,1)
+    for i in reverse(1:n)
+        b[i] = (1/U[i,i]) * (b[i] - sum(U[i,j]*b[j] for j=1+i:n; init=0))
+    end
+    return b
+end
+```
+
+```@example 1
+y = [1.2, -2.3, 5.6,4.5,0.01] # hide
+backward_elimination_compact!(U,y)
+```
 # Homotopy continuation
 
 I wanted to also give a little bit of a peek into 
