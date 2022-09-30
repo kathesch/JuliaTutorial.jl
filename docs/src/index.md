@@ -732,7 +732,7 @@ nothing # hide
 Testing this to see that it generates the correct behaviors
 
 ```@example
-A = A = rand(1:10., 5,5)
+A = A = rand(5,5)
 ```
 
 ```@example 1
@@ -743,7 +743,7 @@ l,u = lu(A)
 LU_decomposition!(A)
 ```
 
-Finally for what we have all been waiting for.
+We 
 
 
 
