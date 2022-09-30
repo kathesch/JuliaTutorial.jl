@@ -458,9 +458,16 @@ b_{n} \\
 \end{equation}
 ```
 
-From here we can see $y_i$ is just $b_i$ minus all the previous values of $y_{i-1}$ to $y_{1}$ multiplied by $l_{i,i-1}$ to $l_{i,1}$. You can think of the range $l_{i,i-1}$:$l_{i,1}$ as being just the the values to left of the 1 on the row corresponding to $y_{i}$.
+Exapand out the matrix multiplication:
+
+$$l_{i1}y_{1}+\dots+l_{i,i-1}y_{i-1} + y_{i}=b_{i}$$
+
+Solve for $y_i$. 
 
 $$y_i = b_i -\sum\limits_{j=1}^{i-1}l_{ij}y_{j}$$
+
+From here we can see $y_i$ is just $b_i$ minus all the previous values of $y_{i-1}$ to $y_{1}$ multiplied by $l_{i,i-1}$ to $l_{i,1}$. You can think of the range $l_{i,i-1}$:$l_{i,1}$ as being just the the values to left of the 1 on the row corresponding to $y_{i}$.
+
 
 
 ```@example 1
@@ -507,7 +514,7 @@ nothing # hide
 @btime forward_elimination!(L,b)
 nothing # hide
 ```
-```@example 2
+```@example 1
 @btime forward_elimination_compact!(L,b)
 nothing # hide
 ```
@@ -538,11 +545,22 @@ y_{n} \\
 \end{equation}
 ```
 
-We can use a similar analysis as forward elimination. Here we have. 
+We can use a similar analysis as forward elimination. Here we have.
+
+
+$$u_{ii}x_{i}+u_{i,i+1}+\dots+u_{in}x_{n}=y_{i}$$
+
+Solve for $x_{i}$
 
 $$x_i = \frac{1}{u_{ii}}\left(y_i -\sum\limits_{j=1+i}^{n}u_{ij}x_{j}\right)$$
 
+The only notable difference from the previous case: 
+
+* Because we don't have 1s all along the diagonal, solving for x_{i} gives us a divisor $u_{ii}$
+* Limits of the summation are now different because we must sum values along each row *to the right* instead of from the left. 
 Let's define a function that is as close to this expression as possible. 
+
+A naive modification of the forward elimination case might look like this. 
 
 ```@example 1
 function backward_elimination!(U,y)
@@ -553,13 +571,15 @@ function backward_elimination!(U,y)
     end
     return x
 end
-nothing #hide
 ```
 
-Test this expression. 
+We will need to test it to make sure we weren't forgetting anything.
 
 ```@example 1
-y = b
+A = rand(5,5)
+y = [1.2, -2.3, 5.6,4.5,0.01]
+L,U = lu(A, NoPivot())
+
 U\y
 ```
 
@@ -568,12 +588,29 @@ backward_elimination!(U,y)
 ```
 
 
+
+
+```@example 1
+y = [1.2, -2.3, 5.6,4.5,0.01] # hide
+function backward_elimination(U,y)
+    n = size(U,1)
+    x = zeros(n)
+    for i in reverse(1:n)
+        x[i] = (1/U[i,i]) * (y[i] - sum(U[i,j]*x[j] for j=1+i:n; init=0))
+    end
+    return x
+end
+nothing #hide
+```
+
 In general, the ideal way of approaching a implementing numerical method is:
 
 1. Write a well defined mathematical expression for the system of interest.
 2. Come up with a clean way to execute it on a computer. As close to math syntax as possible. 
-3. Write a test that can give some insight into how close the function you wrote in 2. reflects the expression you wrote in 1.
-4. Optimize the heck out of 2. and compare with earlier tests for accuracy. 
+3. Write a test that can give some measure of how close the function in 2. reflects the expression in 1.
+4. Optimize and tinker the heck out of 2. This doesn't have to just just mean speed. Also think about making it robust to errors and provide a flexible/generic interface. Compare with earlier tests for accuracy and speed.
+
+There are many cases where one, some, or all of these are hard to do. Science is messy, but 
 
 
 
