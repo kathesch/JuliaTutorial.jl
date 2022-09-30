@@ -4,10 +4,10 @@
 
 Welcome to JuliaTutorial.jl! The aim of this page is to get you quickly started with the Julia programming language.
 
-Julia is perhaps the most productive gateway to the world of numerical methods for scientific computing, and I hope this can be a self-contained resource to get you started with Julia, its ecosystem, and exploring numerical methods with toy example of making a linear solver using LU decomposition. 
+Julia is perhaps the most productive gateway to the world of numerical methods for scientific computing, and I hope this can be a self-contained resource to get you started with Julia, its ecosystem, and exploring numerical methods with a toy example of making a linear solver using LU decomposition. 
 
 
-!!! note "What is Julia and why should you learn it"
+!!! note "What is Julia"
 
     Julia is a scientific programming language comparable to python, matlab, fortran, and R. It was originally created in 2012 by Jeff Bezanson, Stefan Karpinski, Viral Shah (and others) in the MIT Computational Science and Aritifical Intelligence Lab (CSAIL) as an open source project. 
 
