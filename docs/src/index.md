@@ -714,7 +714,7 @@ This suggests it is possible to build out the matrix column-by-column from the l
 Let's write a program for this. Notice that, since the only overlap of the L and U matrices is on the diagonal and we know the diagonal values of L are 1, so we lose nothing by storing all our values in the original matrix.
 
 ```@example 1
-function LU_decomposition!(A)
+function lu_decomposition!(A)
     n = size(A,1)
     for j in 1:n #loop every column
         for i in j+1:n #every row below the jth
@@ -732,7 +732,7 @@ nothing # hide
 Testing this to see that it generates the correct behaviors
 
 ```@example
-A = A = rand(5,5)
+A = rand(5,5)
 ```
 
 ```@example 1
@@ -740,10 +740,46 @@ l,u = lu(A)
 ```
 
 ```@example 1
-LU_decomposition!(A)
+lu_decomposition!(A)
 ```
 
-We 
+We finally have all the pieces of the puzzle for a linear solver! 
+
+```@example 1
+function linear_solve!(A,b)
+    lu_decomposition!(A)
+    forward_elimination!(A,b)
+    backward_elimination!(A,b)
+
+    return b
+end
+nothing # hide
+```
+
+```@example 1
+A = rand(5,5)
+b = rand(5)
+
+A\b
+```
+
+```@example 1
+linear_solve!(A,b)
+```
+
+
+```@example 1
+using BenchmarkTools
+
+@btime A\b
+nothing # hide
+```
+
+```@example 1
+@btime linear_solve!(A,b)
+nothing # hide
+```
+
 
 
 
