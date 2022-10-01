@@ -309,13 +309,8 @@ U\y - backward_elimination!(U,y)
 
 # LU decomposition
 
-We can finally make the LU decomposition. This can be viewed as solving for the zeros the polynomial equation $LU-A=0$ with arbitrary constants $a_{ij}$. 
+We can finally make the LU decomposition. This can be viewed as solving for the zeros of polynomial equation $LU-A=0$ with arbitrary constants $a_{ij}$. 
 
-It is a little funny that one of the simplest ways of solving a general linear system is actually to first a polynomial system. Polynomial/nonlinear systems hiding behind "simple" algorithms is a very common theme in applied math and computer science.
-
-One possible explanation for the flexibility and ubiquitousness of linear system solvers at the heart of so many problems, for instance, linear regression, newton's method, physics inverse problems, etc is the solvers for them already come prepackaged with sophisticated math. 
-
-Okay, but how do we actually solve that monster? It isn't too different from our treatment of `forward elimination` and `backward elimination`. Except instead of using 1 element that we know (either the first or last) and "growing" the solution, we use the entire first row. 
 
 ```math
 \begin{equation}
@@ -329,6 +324,13 @@ Okay, but how do we actually solve that monster? It isn't too different from our
 \right)
 \end{equation}
 ```
+
+It is a little funny that one of the simplest ways of solving a general linear system is actually to first solve a polynomial system. Polynomial/nonlinear systems hiding behind "simple" algorithms is a very common theme in applied math and computer science.
+
+One possible explanation for the flexibility and ubiquitousness of linear system solvers being at the heart of so many problems such linear regression, newton's method, physics inverse problems, etc is the solvers for them already come prepackaged with sophisticated math. 
+
+Okay, but how do we actually solve that monster? It isn't too different from our treatment of `forward elimination` and `backward elimination`. Except instead of using 1 element that we know (either the first or last) and "growing" the solution, we use the entire first row. 
+
 
 There are three parts to this system of equations.
 
