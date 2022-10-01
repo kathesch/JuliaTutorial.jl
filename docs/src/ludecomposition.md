@@ -172,10 +172,10 @@ function forward_elimination!(L,b)
     return b
 end
 
-forward_elimination!(L,b)
+L\b - forward_elimination!(L,b)
 ```
 
-Which gives us the expected correct results.
+Which give's us the same results as non-mutating `forward_elimination`.
 
 We need to benchmark our results to see if this was actually worth it. And as you can see below, we are getting an almost 3x improvement over Julia's `\` with`forward_elimination`. `forward_elimination!` gives us a 2x improvement on top of that (total 6x)!. 
 
