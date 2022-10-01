@@ -61,11 +61,11 @@ b = [1.2, -2.3, 5.6, 800, 0.01] # test array ideally covers a variety of numbers
 L,U = lu(A, NoPivot()) # with pivoting turned off to make it like our algorithm
 
 L\b - forward_elimination(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
-  0.0
-  0.0
-  0.0
-  1.1368683772161603e-13
- -1.1368683772161603e-13</code></pre><p>We can see the error between <code>L\b</code> and <code>forward_elimination(L,b)</code> is as close to 0 as machine precision allows. </p><p>When making a numerical algorithm, we go from a mathematical expression to a piece of code. Ideally, that piece of code is initially made quite close to the mathematical expression to make it easy to tweak and debug.</p><p>However, there are almost always modifications we want to make to that code to make it much faster or have other desireable design features (such as having a similar interface as other functions in our code base or work with multiple different cases.).</p><p>Let&#39;s touch up <code>forward elimination</code> to make it faster. The biggest change we can make is to remove the unnecessary <code>y</code> array. <code>b[i]</code> at the current and future iterations is the only information we need. Earlier indices of <code>b</code> are essentially just free real estate that we can assign output to. This will make the function a &quot;mutating&quot; one i.e. it modifies an array outside of the function scope (not initialized inside the function). </p><p>Mutation is the source of many computer bugs and headaches in software, but it is well worth it for performance. To make it easier to identify bugs from mutation, the Julia convention is to write a <code>!</code> after the function. We therefore have <code>forward_elimination!</code>. </p><pre><code class="language-julia hljs">function forward_elimination!(L,b)
+ 0.0
+ 8.881784197001252e-16
+ 0.0
+ 0.0
+ 0.0</code></pre><p>We can see the error between <code>L\b</code> and <code>forward_elimination(L,b)</code> is as close to 0 as machine precision allows. </p><p>When making a numerical algorithm, we go from a mathematical expression to a piece of code. Ideally, that piece of code is initially made quite close to the mathematical expression to make it easy to tweak and debug.</p><p>However, there are almost always modifications we want to make to that code to make it much faster or have other desireable design features (such as having a similar interface as other functions in our code base or work with multiple different cases.).</p><p>Let&#39;s touch up <code>forward elimination</code> to make it faster. The biggest change we can make is to remove the unnecessary <code>y</code> array. <code>b[i]</code> at the current and future iterations is the only information we need. Earlier indices of <code>b</code> are essentially just free real estate that we can assign output to. This will make the function a &quot;mutating&quot; one i.e. it modifies an array outside of the function scope (not initialized inside the function). </p><p>Mutation is the source of many computer bugs and headaches in software, but it is well worth it for performance. To make it easier to identify bugs from mutation, the Julia convention is to write a <code>!</code> after the function. We therefore have <code>forward_elimination!</code>. </p><pre><code class="language-julia hljs">function forward_elimination!(L,b)
     n = size(L,1)
     for i in 1:n
         b[i] = b[i] - sum(L[i,j] * b[j] for j=1:i-1; init=0)
@@ -74,12 +74,12 @@ L\b - forward_elimination(L,b)</code></pre><pre class="documenter-example-output
 end
 
 L\b - forward_elimination!(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
- 0.0
- 0.0
- 0.0
- 0.0
- 0.0</code></pre><p>Which give&#39;s us the same results as non-mutating <code>forward_elimination</code>.</p><p>We need to benchmark our results to see if this was actually worth it. And as you can see below, we are getting an almost 3x improvement over Julia&#39;s <code>\</code> with<code>forward_elimination</code>. <code>forward_elimination!</code> gives us a 2x improvement on top of that (total 6x)!. </p><pre><code class="language-julia hljs">using BenchmarkTools
-@btime L\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  226.820 ns (1 allocation: 96 bytes)</code></pre><pre><code class="language-julia hljs">@btime forward_elimination(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  73.897 ns (1 allocation: 96 bytes)</code></pre><pre><code class="language-julia hljs">@btime forward_elimination!(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  36.758 ns (0 allocations: 0 bytes)</code></pre><h1 id="Backward-elimination"><a class="docs-heading-anchor" href="#Backward-elimination">Backward elimination</a><a id="Backward-elimination-1"></a><a class="docs-heading-anchor-permalink" href="#Backward-elimination" title="Permalink"></a></h1><p>Here we have the backwards elimination equation. </p><p class="math-container">\[\begin{equation}
+  0.0
+  8.881784197001252e-16
+  0.0
+  0.0
+ -7.105427357601002e-15</code></pre><p>Which give&#39;s us the same results as non-mutating <code>forward_elimination</code>.</p><p>We need to benchmark our results to see if this was actually worth it. And as you can see below, we are getting an almost 3x improvement over Julia&#39;s <code>\</code> with<code>forward_elimination</code>. <code>forward_elimination!</code> gives us a 2x improvement on top of that (total 6x)!. </p><pre><code class="language-julia hljs">using BenchmarkTools
+@btime L\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  209.456 ns (1 allocation: 96 bytes)</code></pre><pre><code class="language-julia hljs">@btime forward_elimination(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  70.459 ns (1 allocation: 96 bytes)</code></pre><pre><code class="language-julia hljs">@btime forward_elimination!(L,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  37.200 ns (0 allocations: 0 bytes)</code></pre><h1 id="Backward-elimination"><a class="docs-heading-anchor" href="#Backward-elimination">Backward elimination</a><a id="Backward-elimination-1"></a><a class="docs-heading-anchor-permalink" href="#Backward-elimination" title="Permalink"></a></h1><p>Here we have the backwards elimination equation. </p><p class="math-container">\[\begin{equation}
 \begin{bmatrix}
 u_{11}  &amp; u_{12} &amp; \dots &amp;u_{1n}\\
  &amp; u_{22} &amp; \dots &amp; u_{2n}\\
@@ -111,23 +111,23 @@ y = [1.2, -2.3, 5.6,4.5,0.01]
 L,U = lu(A, NoPivot())</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">LU{Float64, Matrix{Float64}, Vector{Int64}}
 L factor:
 5×5 Matrix{Float64}:
- 1.0       0.0         0.0       0.0       0.0
- 0.50879   1.0         0.0       0.0       0.0
- 0.391449  0.688465    1.0       0.0       0.0
- 0.525864  0.313652    5.58235   1.0       0.0
- 0.888678  0.0673338  -5.07639  -0.736671  1.0
+  1.0      0.0       0.0       0.0      0.0
+ 12.4354   1.0       0.0       0.0      0.0
+  7.09386  0.620523  1.0       0.0      0.0
+ 12.3079   1.04008   0.154586  1.0      0.0
+ 14.9961   1.28752   0.80237   1.18713  1.0
 U factor:
 5×5 Matrix{Float64}:
- 0.679509  0.667887  0.71015     0.943868   0.212855
- 0.0       0.481615  0.132232   -0.38204    0.620576
- 0.0       0.0       0.0992718   0.139834  -0.239749
- 0.0       0.0       0.0        -1.10951    2.00534
- 0.0       0.0       0.0         0.0        0.0893159</code></pre><pre><code class="language-julia hljs">U\y - backward_elimination(U,y)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
- -34.99109608138679
- -20.25363821702825
-   5.69837285727121
-   0.2023610573439898
-   0.0</code></pre><p>Examining the error of this result from bottom to top, we see that our <code>backwards_elimination</code> starts off well, but then gets very confused. </p><p>This is a critical lesson to learn with computational algorithms - mathematical expressions do not always contain all the information we need to translate it to a computer. </p><p>In this case, in our for loop, we were starting from <code>1</code> instead of the <code>n</code>. Our algorithm was dutifully using our <code>x</code> array filled with 0s to compute the long sum for <span>$x_{1}$</span> instead of starting from the single known case of <span>$x_{n}$</span> and building up to <span>$x_{1}$</span>.</p><p>We can fix this problem, by calling <code>reverse</code> on our range for <code>i</code>. We could also use <code>n:-1:1</code> to do it more like python, but <code>reverse</code> is probably a little easier to read. </p><pre><code class="language-julia hljs">function backward_elimination(U,y)
+ 0.054475    0.919823   0.48424    0.134699    0.942563
+ 0.0       -10.4553    -5.55331   -0.686453  -11.2102
+ 0.0         0.0        0.443499  -0.20201     0.658451
+ 0.0         0.0        0.0       -0.424391    0.463384
+ 0.0         0.0        0.0        0.0        -0.647718</code></pre><pre><code class="language-julia hljs">U\y - backward_elimination(U,y)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
+ 11.379741143785303
+ -3.4356649915548867
+ -4.8145428551837
+ -0.016857370960408957
+  0.0</code></pre><p>Examining the error of this result from bottom to top, we see that our <code>backwards_elimination</code> starts off well, but then gets very confused. </p><p>This is a critical lesson to learn with computational algorithms - mathematical expressions do not always contain all the information we need to translate it to a computer. </p><p>In this case, in our for loop, we were starting from <code>1</code> instead of the <code>n</code>. Our algorithm was dutifully using our <code>x</code> array filled with 0s to compute the long sum for <span>$x_{1}$</span> instead of starting from the single known case of <span>$x_{n}$</span> and building up to <span>$x_{1}$</span>.</p><p>We can fix this problem, by calling <code>reverse</code> on our range for <code>i</code>. We could also use <code>n:-1:1</code> to do it more like python, but <code>reverse</code> is probably a little easier to read. </p><pre><code class="language-julia hljs">function backward_elimination(U,y)
     n = size(U,1)
     x = zeros(n)
     for i in reverse(1:n)
@@ -135,9 +135,9 @@ U factor:
     end
     return x
 end</code></pre><pre><code class="language-julia hljs">U\y - backward_elimination(U,y)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
-  1.4210854715202004e-14
-  0.0
  -7.105427357601002e-15
+  8.881784197001252e-16
+ -8.881784197001252e-16
   0.0
   0.0</code></pre><p>And let&#39;s make similar changes as <code>forward_elimination!</code> to yield <code>backward_elimination!</code>. This just means replacing <code>x</code> and <code>y</code> with <code>b</code> and removing our allocation of the <code>x</code> array. This will give a similar 2x speed improvement over <code>backward_elimination</code> and give us a common notation across all our elimination functions with just <code>b</code> instead of <code>x</code>,<code>y</code>,<code>b</code>.</p><pre><code class="language-julia hljs">function backward_elimination!(U,b)
     n = size(U,1)
@@ -146,9 +146,9 @@ end</code></pre><pre><code class="language-julia hljs">U\y - backward_eliminatio
     end
     return b
 end</code></pre><p>Our error is just machine precision.</p><pre><code class="language-julia hljs">U\y - backward_elimination!(U,y)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
-  1.4210854715202004e-14
-  0.0
  -7.105427357601002e-15
+  8.881784197001252e-16
+ -8.881784197001252e-16
   0.0
   0.0</code></pre><h1 id="LU-decomposition"><a class="docs-heading-anchor" href="#LU-decomposition">LU decomposition</a><a id="LU-decomposition-1"></a><a class="docs-heading-anchor-permalink" href="#LU-decomposition" title="Permalink"></a></h1><p>We can finally make the LU decomposition. This can be viewed as solving for the zeros of polynomial equation <span>$LU-A=0$</span> with arbitrary constants <span>$a_{ij}$</span>. </p><p class="math-container">\[\begin{equation}
 \left(
@@ -175,23 +175,23 @@ end</code></pre><p>Testing this to see that it generates the correct behaviors.<
 l,u = lu(A, NoPivot())</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">LU{Float64, Matrix{Float64}, Vector{Int64}}
 L factor:
 5×5 Matrix{Float64}:
- 1.0       0.0       0.0      0.0      0.0
- 1.2164    1.0       0.0      0.0      0.0
- 0.956    -0.172528  1.0      0.0      0.0
- 1.58272  -2.55494   7.43741  1.0      0.0
- 1.72514  -2.11117   6.6081   1.20192  1.0
+  1.0     0.0       0.0      0.0       0.0
+ 11.0662  1.0       0.0      0.0       0.0
+ 12.731   1.11156   1.0      0.0       0.0
+ 19.2077  1.78197  -2.10417  1.0       0.0
+ 31.6407  2.91693   4.69367  0.481171  1.0
 U factor:
 5×5 Matrix{Float64}:
- 0.501034  0.555459   0.69787    0.722681    0.921407
- 0.0       0.311737  -0.837666  -0.852883   -0.798524
- 0.0       0.0       -0.339337  -0.0364385  -0.353953
- 0.0       0.0        0.0       -2.29586    -0.386259
- 0.0       0.0        0.0        0.0         0.0398253</code></pre><pre><code class="language-julia hljs">lu_decomposition!(A)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5×5 Matrix{Float64}:
- 0.501034   0.555459   0.69787    0.722681    0.921407
- 1.2164     0.311737  -0.837666  -0.852883   -0.798524
- 0.956     -0.172528  -0.339337  -0.0364385  -0.353953
- 1.58272   -2.55494    7.43741   -2.29586    -0.386259
- 1.72514   -2.11117    6.6081     1.20192     0.0398253</code></pre><h1 id="Putting-it-all-together-as-a-linear-Solver"><a class="docs-heading-anchor" href="#Putting-it-all-together-as-a-linear-Solver">Putting it all together as a linear Solver</a><a id="Putting-it-all-together-as-a-linear-Solver-1"></a><a class="docs-heading-anchor-permalink" href="#Putting-it-all-together-as-a-linear-Solver" title="Permalink"></a></h1><p>We have all the pieces of the puzzle for a linear solver! Since all of our functions are mutating, we just have to list them in the three steps outlined at the beginning. </p><pre><code class="language-julia hljs">function linear_solve!(A,b)
+ 0.0252261   0.817167   0.222019   0.936191   0.75243
+ 0.0        -8.5504    -2.04904   -9.80284   -7.56346
+ 0.0         0.0       -0.166631  -0.106816  -0.418574
+ 0.0         0.0        0.0       -0.575872  -1.14808
+ 0.0         0.0        0.0        0.0        1.53468</code></pre><pre><code class="language-julia hljs">lu_decomposition!(A)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5×5 Matrix{Float64}:
+  0.0252261   0.817167   0.222019   0.936191   0.75243
+ 11.0662     -8.5504    -2.04904   -9.80284   -7.56346
+ 12.731       1.11156   -0.166631  -0.106816  -0.418574
+ 19.2077      1.78197   -2.10417   -0.575872  -1.14808
+ 31.6407      2.91693    4.69367    0.481171   1.53468</code></pre><h1 id="Putting-it-all-together-as-a-linear-Solver"><a class="docs-heading-anchor" href="#Putting-it-all-together-as-a-linear-Solver">Putting it all together as a linear Solver</a><a id="Putting-it-all-together-as-a-linear-Solver-1"></a><a class="docs-heading-anchor-permalink" href="#Putting-it-all-together-as-a-linear-Solver" title="Permalink"></a></h1><p>We have all the pieces of the puzzle for a linear solver! Since all of our functions are mutating, we just have to list them in the three steps outlined at the beginning. </p><pre><code class="language-julia hljs">function linear_solve!(A,b)
     lu_decomposition!(A)
     forward_elimination!(A,b)
     backward_elimination!(A,b)
@@ -202,10 +202,10 @@ b = rand(5)
 
 # Error is just machine precision
 A\b - linear_solve!(A,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Float64}:
-  0.0
- -2.7755575615628914e-16
-  2.220446049250313e-16
+ -1.1102230246251565e-16
+  5.551115123125783e-17
  -2.220446049250313e-16
-  1.1796119636642288e-16</code></pre><pre><code class="language-julia hljs">using BenchmarkTools
+  1.6653345369377348e-16
+  1.1102230246251565e-16</code></pre><pre><code class="language-julia hljs">using BenchmarkTools
 
-@btime A\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  671.376 ns (3 allocations: 448 bytes)</code></pre><pre><code class="language-julia hljs">@btime linear_solve!(A,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  169.875 ns (0 allocations: 0 bytes)</code></pre><p>Our solver is ~3x faster than Base Julia&#39;s! This is mostly because we don&#39;t have to check for the best algorithm and <code>\</code> must allocate some memory. Still really great though!  </p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Learning Julia</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Saturday 1 October 2022 02:57">Saturday 1 October 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+@btime A\b</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  643.404 ns (3 allocations: 448 bytes)</code></pre><pre><code class="language-julia hljs">@btime linear_solve!(A,b)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">  170.320 ns (0 allocations: 0 bytes)</code></pre><p>Our solver is ~3x faster than Base Julia&#39;s! This is mostly because we don&#39;t have to check for the best algorithm and <code>\</code> must allocate some memory. Still really great though!  </p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Learning Julia</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Saturday 1 October 2022 03:55">Saturday 1 October 2022</span>. Using Julia version 1.8.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
