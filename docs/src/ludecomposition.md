@@ -149,8 +149,9 @@ using LinearAlgebra
 A = rand(5,5)
 b = [1.2, -2.3, 5.6, 800, 0.01] # test array ideally covers a variety of numbers
 L,U = lu(A, NoPivot()) # with pivoting turned off to make it like our algorithm
-```
 
+L\b
+```
 ```@example 1
 function forward_elimination(L,b)
     n = size(L,1)
@@ -161,10 +162,8 @@ function forward_elimination(L,b)
     return y
 end
 
-L\b - forward_elimination(L,b)
+forward_elimination(L,b)
 ```
-
-We can see these are in agreement with only machine precision erro. 
 
 When making a numerical algorithm, we go from a mathematical expression to a piece of code. Ideally, that piece of code is initially made quite close to the mathematical expression to make it easy to tweak and debug.
 
