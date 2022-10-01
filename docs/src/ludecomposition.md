@@ -3,14 +3,14 @@
 
 Let's write our first numerical algorithm!
 
-There are many candidates for a "hello world" numerical algorithm, for instance [forward/backward euler methods for ODEs](https://en.wikipedia.org/wiki/Euler_method), but I think LU decomposition is perhaps the most fundamental and instructive. 
+There are many candidates for a "hello world" numerical algorithm, for instance [forward/backward euler methods for ODEs](https://en.wikipedia.org/wiki/Euler_method), but I think LU decomposition is perhaps the most fundamental and instructive.
 
 LU decomposition, despite its modern name, has a long history. It can be thought of as simply gaussian elimination (only popularized by Gauss - Newton invented it in the Western world). This technique was first documented by Chinese mathematicians in AD 179 who used a unique form of computational tool known as [rod calculus](https://en.wikipedia.org/wiki/Rod_calculus) to execute the algorithm. This was one of the earliest formal uses of something like a computer algorithm as well as solving a linear system of equations, an ubiquitous task in scientific computing. 
 
 Let's start from this [wikipedia](https://en.wikipedia.org/wiki/Gaussian_elimination#Example_of_the_algorithm) example of what the gaussian elimination looks like as a starting point for our algorithm. 
 
 ```@raw html
-<img src="docs/src/2022-09-29-06-22-00.png" width=400/>
+<img src="assets/2022-09-29-06-22-00.png" width=400/>
 ```
 
 Without doing any kind of pivots in our augmented matrix (exchange of rows), our takeaway from this should be that solving a linear system looks a bit like manipulating it into a upper triangular form (forward elimination) followed by manipulating it into simultaneously lower triangular form (backward elimination) which yields an identity matrix and a solution.
