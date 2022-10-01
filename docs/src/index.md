@@ -33,7 +33,7 @@ It can also be installed via homebrew (on macs) by pasting the following command
 brew install --cask julia
 ```
 
-Simply typing `julia` in a terminal to open a Julia REPL (read-evaluate-print-loop) session. You can use the REPL to evaluate simple Julia expression, manage Julia packages, run shell commands, and access documentation. Additionally, you can run a Julia file in you active directory by typing `julia my_julia_program.jl`. 
+Simply type `julia` in a terminal to open a Julia REPL (read-evaluate-print-loop) session. You can use the REPL to evaluate simple Julia expression, manage Julia packages, run shell commands, and access documentation. Additionally, you can run a Julia file in you active directory by typing `julia my_julia_program.jl`. 
 
 Let's open a julia REPL and type `print("hello world")`.
 ```
@@ -356,26 +356,25 @@ Here is also a lineup of some notable packages that physical chemistry people mi
 
 * [DifferentialEquations.jl](https://diffeq.sciml.ai/stable/): The most notable member of the SciML ecosystem and probably the most comprehensive framework for numerically solving ordinary differential equations out there. 
 
-* [Flux.jl](https://fluxml.ai/Flux.jl/stable/): This is the main framework for machine learning in Julia and provide similar functionality to python's PyTorch. Compared to python machine learning frameworks, it is extremely lightweight and explicit. In fact, Flux.jl's documentation describes how you could have built Flux.jl yourself by simply making convenience functions for regressions using automatic differentiation. 
+* [Flux.jl](https://fluxml.ai/Flux.jl/stable/): This is the main framework for machine learning in Julia and provides similar functionality to python's PyTorch. Compared to python machine learning frameworks, it is extremely lightweight and explicit. In fact, Flux.jl's documentation describes how you could have built Flux.jl yourself by simply making convenience functions for regressions using automatic differentiation. 
   
 * [Zygote.jl](https://fluxml.ai/Zygote.jl/latest/): Julia's main automatic differentiation package and is what powers Flux.jl. It has a similar lightweight/explict design philosophy. The book [Numerical Methods for Scientific Computing](https://www.equalsharepress.com/media/NMFSC.pdf) has a great tutorial on how to build an automatic differentiation tool in Julia similar to Zygote.
 
-* [Pluto.jl](https://github.com/fonsp/Pluto.jl): Fills a similar role to Jupyter notebooks (actually you can use Julia in Jupyter as well). Has many advantages over Jupyter notebooks notably being just a normal `.jl` file as opposed to a special `.ipynb` and being "reactive" meaning it automatically updates everything as you write code. Probably the best alternative to VS Code. 
+* [Pluto.jl](https://github.com/fonsp/Pluto.jl): Fills a similar role to Jupyter notebooks (actually you can use Julia in Jupyter as well).Has many advantages over Jupyter notebooks notably being just a normal `.jl` file as opposed to having both `.py` and `.ipynb` file types and being reactive - it updates all affected cells after changing a variable. Also, Grant Sanderson (3Blue1Brown) [is a fan](https://www.youtube.com/watch?v=DGojI9xcCfg) if you need any more reason to check it out.
   
 **Plotting**
 * [Plots.jl](https://docs.juliaplots.org/stable/): The jack-of-all-trades standard plotting package. Has many backends and a simple syntax to make quick and dirty plots.
-* [Makie.jl](https://docs.makie.org/dev/): An extremely flexible `GPU powered plotting` package. Can make nice statistical plots and also interactive interfaces for "plots" which are borderline simple video games. 
+* [Makie.jl](https://docs.makie.org/dev/): An extremely flexible GPU powered plotting package. Can make nice statistical plots as well as interactive interfaces for "plots" which are borderline simple video games. 
 * [Gadfly.jl](https://github.com/GiovineItalia/Gadfly.jl): Specialized for making really clean, composable statistical plots. 
-* [Pluto.jl](https://github.com/fonsp/Pluto.jl): Not technically a plotting library, but fills a similar role to Jupyter notebooks (actually you can use Julia in Jupyter as well). Has many advantages over Jupyter notebooks notalby being just a normal `.jl` file. 
 
 **Computer Algebra Systems**
-* [MathLink.jl](https://github.com/JuliaInterop/MathLink.jl): Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew). You can use it independently, but this is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. Combine with Pluto.jl for a pretty nice and very free version of a Mathematica notebook. 
-* [Symbolics.jl](https://symbolics.juliasymbolics.org/dev/): The pure Julia equivalent of Mathematica. It is not as user friendly or flexible as Mathematica particuarly with symbolic integration, but it is *much* faster and support auto-differentiation. 
+* [MathLink.jl](https://github.com/JuliaInterop/MathLink.jl): Wolfram Mathematica has a completely free and lightly licensed version known as [WolframEngine](https://www.wolfram.com/engine/) (can easily install it with brew). You can use it independently, but it is a really excellent interface in Julia that can bridge the gap between computational and analytic methods though at some performance cost. Combine with Pluto.jl for a pretty nice and very free version of a Mathematica notebook. 
+* [Symbolics.jl](https://symbolics.juliasymbolics.org/dev/): The pure Julia equivalent of Mathematica. It is not as user friendly or as flexible as Mathematica particularly with symbolic integration, but it is *much* faster and supports auto-differentiation. 
 * [MetaTheory.jl](https://github.com/JuliaSymbolics/Metatheory.jl): The backend for Symbolics.jl. You can define generic relationships between data structure in an abstract algebra-y way such as introducing an identity operation or a distributive property. It can then use Julia's metaprogramming interface and a concept known as [E-graph](https://en.wikipedia.org/wiki/E-graph) saturation to simplify expressions of these structures. 
 
 **Quantum**
 
-* [Quantum Optics.jl](https://docs.qojulia.org): This is the biggest quantum package in the Julia ecosystem and similar to python's [QuTip](https://qutip.org).
+* [QuantumOptics.jl](https://docs.qojulia.org): This is the biggest quantum package in the Julia ecosystem and similar to python's [QuTip](https://qutip.org).
 
 * [OpenQuantumTools.jl](https://uscqserver.github.io/OpenQuantumTools.jl/dev/): Contains performant solvers, mostly using DifferentialEquations.jl for working with open quantum systems. 
  
