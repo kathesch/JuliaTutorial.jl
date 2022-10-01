@@ -70,7 +70,7 @@ There is one small issue with this scheme in that if $a_{11}$ is 0 or just very 
 
     What algorithm is "pretty good" is actually very relative to your exact use, so you might need to make explicit choices about your algorithm by using packages such as [LinearSolve.jl](http://linearsolve.sciml.ai/stable/solvers/solvers/). Particularly for large systems, in extreme cases, algorithm choice can mean the difference between solving it in hours or seconds. 
 
-    This is why that although you will likely never actually use your own linear solver, it can be helpful to know what different algorithms exist and have some insight as to what they are good at. For instance, that LU decomposition is fastest for small, dense matrices, singular value decomposition and qr algorithm are expensive, but can make up for it in precision, and that iterative methods are great for large systems compared to factorization methods ([from LinearSolver.jl docs](http://linearsolve.sciml.ai/stable/solvers/solvers/))
+    This is why that although you will likely never actually use your own linear solver, it can be helpful to know what different algorithms exist and have some insight as to what they are good at. For instance, that LU decomposition is fastest for small, dense matrices, singular value decomposition and qr algorithm are expensive, but can make up for it in precision, and that iterative methods are great for large systems compared to factorization methods ([from LinearSolver.jl](http://linearsolve.sciml.ai/stable/solvers/solvers/))
 
 # Forward elimination
 
@@ -132,7 +132,7 @@ function forward_elimination(L,b)
     return y
 end
 ```
-Breaking the following function down a little:
+Breaking the this function down a little:
 
 * `n = size(L,1)` gives us the number of rows along in $L$.
 * `y = zeros(n)` initializes an array of zeros. 
@@ -149,8 +149,6 @@ using LinearAlgebra
 A = rand(5,5)
 b = [1.2, -2.3, 5.6, 800, 0.01] # test array ideally covers a variety of numbers
 L,U = lu(A, NoPivot()) # with pivoting turned off to make it like our algorithm
-
-L\b
 ```
 
 ```@example 1
@@ -163,10 +161,10 @@ function forward_elimination(L,b)
     return y
 end
 
-forward_elimination(L,b)
+L\b - forward_elimination(L,b)
 ```
 
-We can see these are in agreement. 
+We can see these are in agreement with only machine precision erro. 
 
 When making a numerical algorithm, we go from a mathematical expression to a piece of code. Ideally, that piece of code is initially made quite close to the mathematical expression to make it easy to tweak and debug.
 
@@ -299,7 +297,7 @@ nothing #hide
 
 ```@example 1
 y = [1.2, -2.3, 5.6,4.5,0.01] # hide
-backward_elimination(U,y)
+U\y - backward_elimination(U,y)
 ```
 
 And let's make similar changes as `forward_elimination!` to yield `backward_elimination!`. This just means replacing `x` and `y` with `b` and removing our allocation of the `x` array. This will give a similar 2x speed improvement over `backward_elimination` and give us a common notation across all our elimination functions with just `b` instead of `x`,`y`,`b`.
