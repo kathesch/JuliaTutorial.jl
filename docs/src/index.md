@@ -396,7 +396,7 @@ Here is also a lineup of some notable packages that physical chemistry people mi
         ∫( v⋅(n_Γ⋅∇u) - (n_Γ⋅v)*p )*dΓ
     ```
 
-    You can write unicode characters in VS Code by typing a forward slash before the character you want `\pi` and then `tab` to complete. Base Julia has a lot of "unicode alternatives" to normal syntax. Normally, the documentation from `?` before a function will tell you if it has any neat unicode for it.
+    You can write unicode characters in VS Code by typing a backward slash before the character you want `\pi` and then `tab` to complete. Base Julia has a lot of "unicode alternatives" to normal syntax. Normally, the documentation from `?` before a function will tell you if it has any neat unicode for it.
 
     For instance, we can type `\pi \approx pi` in the repl to get the following. 
     ```julia
