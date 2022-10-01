@@ -150,20 +150,9 @@ A = rand(5,5)
 b = [1.2, -2.3, 5.6, 800, 0.01] # test array ideally covers a variety of numbers
 L,U = lu(A, NoPivot()) # with pivoting turned off to make it like our algorithm
 
-L\b
+L\b - forward_elimination(L,b)
 ```
-```@example 1
-function forward_elimination(L,b)
-    n = size(L,1)
-    y = zeros(n)
-    for i in 1:n
-        y[i] = b[i] - sum(L[i,j] * y[j] for j=1:i-1; init=0)
-    end
-    return y
-end
-
-forward_elimination(L,b)
-```
+We can see the error between `L\b` and `forward_elimination(L,b)` is as close to 0 as machine precision allows. 
 
 When making a numerical algorithm, we go from a mathematical expression to a piece of code. Ideally, that piece of code is initially made quite close to the mathematical expression to make it easy to tweak and debug.
 
