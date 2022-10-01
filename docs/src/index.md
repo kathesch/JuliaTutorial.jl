@@ -212,7 +212,7 @@ There is a lot of syntax to unpack here, but I think it introduces many importan
 
 ### Macros
 
-Macros can be thought of as a generalization of the idea of a function.
+Macros in Julia can be thought of as generalizations of functions.
 
 A function takes arguments which are various data types for instance `sin` takes in types of `Number` such as `Int64`, `Float64`, etc and gives you a value you would associate with `sin` from its mathematical definition.
 
@@ -220,7 +220,7 @@ But instead of taking normal data types like `Int64`, a macro takes *a piece of 
 
 You will likely rarely write these, but you will encounter and use them everywhere in the Julia ecosystem. 
 
-The most useful macro in Base Julia is `@time` which will time the code after it. Just a function, you can read the documentation for a macro by using `?@time` in a REPL. 
+The most useful macro in Base Julia is `@time` which will time the code after it and write it to `stdout` (usually just the REPL). You can read the documentation for a macro by using `?@time` in a REPL. 
 
 ```@example 1
 @time sin(pi/2)
@@ -252,13 +252,18 @@ nothing # hide
 
     Memory estimate: 497.41 KiB, allocs estimate: 21325.
     ```
+
+    There are many other important benchmarking macros in Base Julia. By far the most commonly used in writing performant code (at least for me) is `@code_warntype` which tells you what data types the compiler thinks your code is using. If the compiler can't tell (which is the usual situation with python and most other dynamically typed languages), your code will suffer steep performance penalties, and be "type unstable". If you are wanting to improve code performance, and can't think of anything obvious to do, I recommend to put `@code_warntype` in front of a function call and tweak your code until all the red writing writing from it goes away. 
+
+    Other neat benchmarking macros are `@code_native` and `@code_llvm` which show what your code looks like as it is "lowered" into llvm and then assembly language. Not usually that useful, but very interesting! 
+
 ### For loops
 
 Most programming languages have constructions called "for loops" which allow execution of code repeatedly. 
 
 In Julia the typical syntax is `for i in Iterators...end`. Note "white space" is not as important in Julia as it is in python `for i in 1:5 end` is a valid loop in Julia. This is the fastest and most flexible way of making a for loop and is therefore the most commonly used for writing numerical methods.
 
-`i` is the index variable and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps.
+`i` is the index variable (can be any other letter(s)) and takes on the value of every element in "Iterator". Iterators are any data structure with many elements and an a ordering such as arrays, strings, and ranges. Here `1:5` is of type `Range`. We could also specify `1:2:5` to count by 2's or `range(0,2pi,length=5)` to go from 0 to 2pi in 5 steps.
 
 ```@example 1
 for i in 1:5
@@ -376,7 +381,40 @@ Here is also a lineup of some notable packages that physical chemistry people mi
 
 * [QuantumOptics.jl](https://docs.qojulia.org): This is the biggest quantum package in the Julia ecosystem and similar to python's [QuTip](https://qutip.org).
 
-* [OpenQuantumTools.jl](https://uscqserver.github.io/OpenQuantumTools.jl/dev/): Contains performant solvers, mostly using DifferentialEquations.jl for working with open quantum systems. 
+* [OpenQuantumTools.jl](https://uscqserver.github.io/OpenQuantumTools.jl/dev/): Contains performant solvers, mostly using DifferentialEquations.jl for working with open quantum systems.
+
+!!! note "Using unicode characters for more expressive syntax"
+
+    One very powerful feature of Julia is being able to use [unicode characters](https://docs.julialang.org/en/v1/manual/unicode-input/) to make more expressive syntax. This is simply amazing for writing clearer code, particularly if you are adapting it from complicated math. And on the flip side of this, package developers can make awesome interfaces like this example from [GridAp.jl](https://github.com/gridap/Gridap.jl) which is almost 1 to 1 to the mathematical syntax for the weak form of the Navier-Stokes equation with Neumann boundary conditions. 
+
+    ```julia
+    a((u,p),(v,q)) =
+        ∫( ∇(v)⊙∇(u) - (∇⋅v)*p + q*(∇⋅u) )*dΩ
+
+    l((v,q)) =
+        ∫( v⋅f + q*g )*dΩ +
+        ∫( v⋅(n_Γ⋅∇u) - (n_Γ⋅v)*p )*dΓ
+    ```
+
+    You can write unicode characters in VS Code by typing a forward slash before the character you want `\pi` and then `tab` to complete. Base Julia has a lot of "unicode alternatives" to normal syntax. Normally, the documentation from `?` before a function will tell you if it has any neat unicode for it.
+
+    For instance, we can type `\pi \approx pi` in the repl to get the following. 
+    ```julia
+        julia> π ≈ pi
+        true
+    ```
+    Or a little more ridiculously: .
+    ```julia
+        julia> for 😄 ∈ [:α², :🐈,:🐕,:🐘, :ℶₐ] ∩ [:🐈,:🐕,:🐘] print(😄) end
+        🐈🐕🐘
+    ```
+    Note `:` before a character(s) makes it a [Symbol](https://docs.julialang.org/en/v1/manual/metaprogramming/#Symbols).
+
+
+
+
+
+
  
 
 
